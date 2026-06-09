@@ -1,0 +1,224 @@
+{
+  "project": {
+    "name": "BB Atlas",
+    "tagline": "JSON-driven living-doc generator. One JSON file → one self-contained interactive HTML atlas — hash-routed drill-down, Monte Carlo schedule simulation, risk register, devlog. Reusable across project plans, constitutions, runbooks, knowledge bases.",
+    "atlasBrand": "BB Atlas",
+    "status": "shipped",
+    "phase": "v1.0.0 — CLI + skill landed 2026-06-09",
+    "updated": "2026-06-09",
+    "repo": "github.com/CaptainRandom00/byte-bridges-atlas"
+  },
+  "metrics": [
+    { "label": "Version", "value": "1.0.0", "unit": "shipped 2026-06-09" },
+    { "label": "Subcommands", "value": "4", "unit": "generate · init · serve · validate" },
+    { "label": "Runtime deps", "value": "0", "unit": "pure Node — only stdlib" },
+    { "label": "Lib modules", "value": "4", "unit": "generate · init · serve · validate" },
+    { "label": "Required schema keys", "value": "1", "unit": "project.name (everything else optional)" }
+  ],
+  "roadmap": {
+    "now": [
+      {
+        "tag": "shipped",
+        "title": "CLI dispatcher",
+        "detail": "bb-atlas generate / init / serve / validate. Default subcommand fires when first arg is a .json path.",
+        "link": "module/cmd-generate"
+      },
+      {
+        "tag": "shipped",
+        "title": "Optional-fields fork",
+        "detail": "All sections optional except project. Missing key → that section is skipped (not crashed).",
+        "link": "module/lib-generate"
+      },
+      {
+        "tag": "shipped",
+        "title": "Live-reload serve mode",
+        "detail": "bb-atlas serve uses fs.watch + SSE to live-reload any open browser tab on JSON change. Zero deps.",
+        "link": "module/cmd-serve"
+      },
+      {
+        "tag": "wired",
+        "title": "Claude skill auto-discovery",
+        "detail": "~/.claude/skills/bb-atlas/ → symlink to this repo. SKILL.md surfaces on any session via trigger phrases ('living document', 'navigable dashboard', etc.)."
+      }
+    ],
+    "next": [
+      {
+        "tag": "follow-up",
+        "title": "Push to GitHub + publish to npm",
+        "detail": "Currently local-only via npm link. gh repo create + git push, then npm publish (or scope as @captainrandom00/bb-atlas) to make installable for others."
+      },
+      {
+        "tag": "follow-up",
+        "title": "Dedup the bb finance copy",
+        "detail": "bb finance project still has the older standalone generator. Migrate it to bb-atlas CLI or programmatic import."
+      },
+      {
+        "tag": "follow-up",
+        "title": "Watch glob patterns",
+        "detail": "bb-atlas serve currently watches one file. Extend to watch templates/ and partials/ if/when those become a thing."
+      }
+    ],
+    "later": [
+      {
+        "tag": "parked",
+        "title": "Themes",
+        "detail": "Today: one dark 'mission control' palette. Could ship `--theme` flag with built-in light + alternative dark options, or `--theme path/to/theme.css` for overrides."
+      },
+      {
+        "tag": "parked",
+        "title": "Partial templates / includes",
+        "detail": "Split a large project.json into per-section JSON files referenced from the root. Useful for large constitutions / multi-team plans."
+      },
+      {
+        "tag": "parked",
+        "title": "Schema documentation generation",
+        "detail": "Auto-generate the schema reference in SKILL.md from a single source-of-truth schema file (JSON Schema or TypeScript types)."
+      }
+    ]
+  },
+  "architecture": {
+    "title": "What's inside the box",
+    "eyebrow": "BB ATLAS · INTERNALS",
+    "crumb": "Internals",
+    "navLabel": "Internals",
+    "summary": "Single-file CLI dispatcher (bin/bb-atlas) routes to one of four lib/ modules. Each module is a single .js file with zero runtime deps. The generator core is split into a pure function (generateString) that returns HTML, plus a file-I/O wrapper (generate) for the common case. Schema validation runs against the same shape the generator consumes — single source of truth.",
+    "kindLabels": {
+      "command": "CLI subcommands · bin/bb-atlas dispatches to these",
+      "lib": "Library modules · zero runtime deps",
+      "template": "Templates · starter scaffolds",
+      "entity": "Schema entities · top-level keys in project.json"
+    },
+    "dataModelLabel": "JSON schema · top-level keys in project.json",
+    "modules": [
+      {
+        "id": "cmd-generate",
+        "name": "bb-atlas generate",
+        "kind": "command",
+        "state": "default",
+        "role": "Emit a self-contained interactive HTML atlas. Implicit if first arg is a .json path: `bb-atlas project.json out.html`.",
+        "depends": ["lib-generate"],
+        "detail": "Resolves output path: explicit 2nd arg → D.output (relative to input dir) → './index.html' beside the input. Creates parent dirs as needed."
+      },
+      {
+        "id": "cmd-init",
+        "name": "bb-atlas init",
+        "kind": "command",
+        "state": "scaffold",
+        "role": "Scaffold a starter project.json + index.html in a target dir (default: cwd). Refuses to overwrite an existing project.json.",
+        "depends": ["lib-init", "tmpl-starter"]
+      },
+      {
+        "id": "cmd-serve",
+        "name": "bb-atlas serve",
+        "kind": "command",
+        "state": "live-reload",
+        "role": "Watch input.json with fs.watch, regenerate on every save, host at http://localhost:4321 (configurable), live-reload open tabs via SSE.",
+        "depends": ["lib-serve", "lib-generate"],
+        "detail": "Debounces fs.watch by 80ms (editors emit multiple events per save). Injects a 5-line EventSource snippet into the served HTML for live-reload. Opens the default browser on boot unless --no-open."
+      },
+      {
+        "id": "cmd-validate",
+        "name": "bb-atlas validate",
+        "kind": "command",
+        "state": "lint",
+        "role": "Lint a project.json against the schema without generating. Surfaces missing required fields + type mismatches. Exits 1 on errors.",
+        "depends": ["lib-validate"]
+      },
+
+      {
+        "id": "lib-generate",
+        "name": "lib/generate.js",
+        "kind": "lib",
+        "state": "core",
+        "role": "Pure-function generator. Exports {generate, generateString}. The same code path serves the CLI, the serve loop, and any programmatic embedding.",
+        "depends": [],
+        "detail": "generateString(D, dataPathHint?) takes parsed JSON, returns {html, viewCount}. generate({dataPath, outPath}) wraps it with file I/O. Script mode (`node lib/generate.js`) is kept for back-compat with the bb finance copy."
+      },
+      {
+        "id": "lib-init",
+        "name": "lib/init.js",
+        "kind": "lib",
+        "state": "scaffold",
+        "role": "Copies templates/starter.project.json into the target dir, then calls generate() to seed index.html alongside it.",
+        "depends": ["lib-generate", "tmpl-starter"]
+      },
+      {
+        "id": "lib-serve",
+        "name": "lib/serve.js",
+        "kind": "lib",
+        "state": "live-reload",
+        "role": "fs.watch + http.createServer + SSE subscribers. Zero deps. Injects the EventSource snippet before </body> of every served response.",
+        "depends": ["lib-generate"]
+      },
+      {
+        "id": "lib-validate",
+        "name": "lib/validate.js",
+        "kind": "lib",
+        "state": "lint",
+        "role": "Recursive type check against the schema. Returns {errors, warnings} — errors fail the lint, warnings are advisory (e.g. 'simulation set without sprints — Monte Carlo will be skipped').",
+        "depends": []
+      },
+
+      {
+        "id": "tmpl-starter",
+        "name": "starter.project.json",
+        "kind": "template",
+        "state": "scaffold",
+        "role": "Slim project.json shipped by `bb-atlas init`. Includes the 3 required-feeling sections (project, metrics, roadmap) + 1 devlog entry. Lets a new user see a working atlas on first run.",
+        "depends": []
+      }
+    ],
+    "dataModel": [
+      { "entity": "project", "fields": ["name (required)", "tagline", "atlasBrand", "status", "phase", "updated", "repo"], "relations": "Brand lockup bolds last word of atlasBrand (or name)" },
+      { "entity": "metrics[]", "fields": ["label", "value", "unit"], "relations": "Snapshot tiles, auto-fit grid" },
+      { "entity": "roadmap", "fields": ["now[]", "next[]", "later[]"], "relations": "Each card: {title, detail, tag, link?}; link = hash route" },
+      { "entity": "sprints[]", "fields": ["id", "name", "weeks[start,end]", "points", "status", "risk", "tasks[]"], "relations": "Each becomes #/sprint/<id> page; tasks have ac (acceptance criteria)" },
+      { "entity": "architecture", "fields": ["summary", "modules[]", "dataModel[]", "kindLabels{}", "title?", "eyebrow?", "crumb?", "navLabel?"], "relations": "modules → per-module pages at #/module/<id>" },
+      { "entity": "risks[]", "fields": ["name", "severity", "prob", "delayWeeks", "impact", "mitigation", "sprint?"], "relations": "prob × delayWeeks feed the Monte Carlo if simulation set; risksLabel overrides section heading (e.g. 'GOTCHAS')" },
+      { "entity": "simulation", "fields": ["totalPoints", "velocityMean", "velocityStd", "sprintWeeks", "runs", "note"], "relations": "Auto-disabled if no sprints. P50/P80/P90 reported in-browser." },
+      { "entity": "devlog[]", "fields": ["date", "title", "tags[]", "body"], "relations": "Reverse-chronological; devlogLabel overrides section heading" }
+    ]
+  },
+  "risksLabel": "Known caveats",
+  "risks": [
+    {
+      "name": "fs.watch on macOS doesn't see editor atomic-saves reliably",
+      "severity": "low",
+      "impact": "Some editors (vim with :w) replace the file atomically, which can confuse fs.watch — change events stop firing.",
+      "mitigation": "If serve stops responding to saves, kill + restart. v1.1 candidate: switch to fs.watchFile (polling) or expose a --poll flag."
+    },
+    {
+      "name": "innerHTML in the bb finance copy",
+      "severity": "low",
+      "impact": "The standalone bb finance generator still uses innerHTML for the sim widget updates — security-hook flagged when copying upstream into this repo.",
+      "mitigation": "This repo uses textContent + pre-rendered <b> markers (same render, safer). bb finance dedup sprint will fix theirs."
+    },
+    {
+      "name": "No JSON Schema document",
+      "severity": "low",
+      "impact": "Schema lives in lib/validate.js + the SKILL.md table. Not a machine-readable JSON Schema (no draft-07 .json). IDE auto-complete works via TS for require/import, not the JSON file.",
+      "mitigation": "v1.1 candidate: emit schema.json from validate.js (or vice versa)."
+    }
+  ],
+  "devlogLabel": "Devlog",
+  "devlog": [
+    {
+      "date": "2026-06-09",
+      "title": "v1.0.0 — CLI dispatcher + skill extracted to standalone repo",
+      "tags": ["feat", "cli", "release"],
+      "body": "Extracted from ~/.claude/skills/bb-atlas/ (inline directory) to ~/Development/byte-bridges-atlas/ (own git repo). bin/bb-atlas dispatcher routes to lib/{generate,init,serve,validate}.js. package.json bin entry → `npm link` puts bb-atlas in $PATH. Skill folder is now a symlink to this repo. Smoke-tested against bb finance baseline: byte-clean (59 lines whitespace + footer diff)."
+    },
+    {
+      "date": "2026-06-09",
+      "title": "Optional-fields fork — sprints/simulation/pricing/risks/devlog/architecture/milestones now skippable",
+      "tags": ["feat", "schema"],
+      "body": "Forked from the bb finance v2 generator. Replaced unguarded .map()/.find() calls with Array.isArray() guards. Sim widget refactored to textContent (was innerHTML). New CSS chips for mod-kind values agent/hook/registry/plugin (constitutional/non-software use cases)."
+    },
+    {
+      "date": "2026-06-09",
+      "title": "First non-project atlas — claudeworkflow constitution",
+      "tags": ["meta"],
+      "body": "Validation use case for the optional-fields fork. ~/claudeworkflow/atlas/constitution.json populated with 31 agents (as architecture.modules, kind: agent), 6 hooks (kind: hook), 4 registries (kind: registry), 7 gotchas (risks with risksLabel: 'GOTCHAS'), 9 constitutional change entries (devlog). Sprints/simulation/pricing all omitted. Renders cleanly at 44 views, 95 KB."
+    }
+  ]
+}

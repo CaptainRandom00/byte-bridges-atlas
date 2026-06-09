@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BB Atlas · Living Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0E27;--surface:#141934;--surface2:#1A1F3A;--border:#2A3152;--text:#E5E7EB;--muted:#9CA3AF;--blue:#0066CC;--cyan:#00D9FF;--teal:#06D6A0;--amber:#FFA500;--red:#E63946;--display:'Chakra Petch',sans-serif;--body:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.5;background-image:radial-gradient(circle at 15% 8%,rgba(0,217,255,.06),transparent 42%),radial-gradient(circle at 85% 92%,rgba(6,214,160,.05),transparent 42%);background-attachment:fixed;min-height:100vh}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.025;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.topnav{position:sticky;top:0;z-index:50;background:rgba(10,14,39,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topnav .inner{max-width:1180px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:22px}
+.brand{font-family:var(--display);font-weight:700;font-size:15px;color:var(--text);text-decoration:none;letter-spacing:.3px}
+.brand b{color:var(--cyan)}
+.topnav a.nav{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;text-transform:uppercase;letter-spacing:1.5px;transition:.2s}
+.topnav a.nav:hover,.topnav a.nav.active{color:var(--cyan)}
+.spacer{flex:1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.view{display:none;animation:fade .4s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+header{border-bottom:1px solid var(--border);padding:44px 0 30px;position:relative}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(6,214,160,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(6,214,160,.5)}70%{box-shadow:0 0 0 9px rgba(6,214,160,0)}100%{box-shadow:0 0 0 0 rgba(6,214,160,0)}}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,5vw,52px);line-height:1.04;letter-spacing:-.5px;margin-bottom:12px}
+.tagline{color:var(--muted);font-size:17px;max-width:680px;margin-bottom:22px}
+.statusbar{display:flex;gap:26px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px}
+.statusbar b{color:var(--cyan);font-weight:500} .statusbar span{color:var(--muted)}
+section{padding:40px 0;border-bottom:1px solid var(--border);position:relative;z-index:2}
+.sec-head{font-family:var(--mono);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin:34px 0 22px;display:flex;align-items:center;gap:12px}
+.sec-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.go{color:var(--cyan);font-family:var(--mono);opacity:.6;transition:.2s}
+.linked:hover .go{opacity:1;transform:translateX(3px)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;opacity:0;transform:translateY(14px);animation:rise .6s forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.metric-val{font-family:var(--display);font-weight:700;font-size:30px;color:var(--cyan);line-height:1}
+.metric-label{font-size:13px;margin-top:8px} .metric-unit{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rm-col-head{font-family:var(--display);font-weight:600;font-size:15px;margin-bottom:12px}
+.rm-now .rm-col-head{color:var(--cyan)} .rm-next .rm-col-head{color:var(--teal)} .rm-later .rm-col-head{color:var(--muted)}
+.rm-card{display:block;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:8px;padding:13px 15px;margin-bottom:10px;transition:.25s;text-decoration:none;color:inherit}
+.rm-card.linked:hover{transform:translateX(4px);border-color:var(--cyan)}
+.rm-now{border-left-color:var(--cyan)} .rm-next{border-left-color:var(--teal)}
+.rm-tag{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.rm-title{font-weight:600;font-size:14.5px;margin-bottom:3px} .rm-detail{font-size:13px;color:var(--muted)}
+.timeline{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 26px}
+.ms-track{position:relative;height:54px;margin-bottom:8px}
+.ms{position:absolute;transform:translateX(-50%);text-align:center;top:0}
+.ms-dot{width:10px;height:10px;border-radius:50%;background:var(--muted);margin:0 auto 6px;border:2px solid var(--bg)}
+.ms-major .ms-dot{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.ms-week{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.ms-label{font-size:9.5px;color:var(--muted);max-width:74px;line-height:1.2;margin-top:2px}
+.ms-major .ms-label{color:var(--cyan);font-weight:600}
+.sprint-row{display:block;margin-bottom:6px;border-radius:8px;padding:9px;transition:.2s;text-decoration:none;color:inherit}
+.sprint-row:hover{background:var(--surface2)}
+.sprint-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:13px}
+.sprint-id{font-family:var(--mono);font-weight:600;color:var(--cyan);font-size:12px}
+.sprint-name{font-weight:600;flex:1} .sprint-pts{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.sprint-status{font-family:var(--mono);font-size:9.5px;padding:2px 7px;border-radius:4px;letter-spacing:1px}
+.st-ready{background:rgba(6,214,160,.15);color:var(--teal)} .st-planned{background:rgba(156,163,175,.12);color:var(--muted)} .st-active{background:rgba(0,217,255,.15);color:var(--cyan)} .st-done{background:rgba(6,214,160,.25);color:var(--teal)}
+.sprint-track{position:relative;height:22px;background:var(--bg);border-radius:6px;overflow:hidden}
+.sprint-bar{position:absolute;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--rc) 70%,transparent),var(--rc));display:flex;align-items:center;padding:0 9px;min-width:60px;transform-origin:left;animation:grow .8s ease-out}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar-weeks{font-family:var(--mono);font-size:10px;color:var(--bg);font-weight:600;white-space:nowrap}
+.arch-cta{margin-top:20px;text-align:center}
+.big-link{display:inline-block;font-family:var(--mono);font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--border);border-radius:9px;padding:13px 22px;transition:.2s;background:var(--surface)}
+.big-link:hover{border-color:var(--cyan);background:rgba(0,217,255,.07)}
+.sim-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start}
+@media(max-width:820px){.sim-wrap,.roadmap,.detail-grid,.mod-grid{grid-template-columns:1fr!important}}
+.sim-canvas-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+#simCanvas{width:100%;height:260px;display:block}
+.sim-caption{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
+.sim-stats{display:flex;flex-direction:column;gap:12px}
+.sim-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden}
+.sim-stat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan)}
+.sim-stat.p80::before{background:var(--amber)} .sim-stat.p90::before{background:var(--red)}
+.sim-pct{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
+.sim-week{font-family:var(--display);font-weight:700;font-size:26px;margin-top:2px} .sim-week b{color:var(--cyan)}
+.sim-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.rerun{font-family:var(--mono);font-size:12px;background:var(--surface2);color:var(--cyan);border:1px solid var(--border);border-radius:7px;padding:9px 14px;cursor:pointer;transition:.2s;margin-top:4px}
+.rerun:hover{border-color:var(--cyan);background:rgba(0,217,255,.08)}
+.risk-row{display:flex;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.risk-sev{width:4px;border-radius:3px;flex-shrink:0}
+.risk-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:4px}
+.risk-name{font-weight:600;font-size:14.5px} .risk-prob{font-family:var(--mono);font-size:11px;color:var(--amber)}
+.risk-impact{font-size:13px} .risk-mit{font-size:12.5px;color:var(--muted);margin-top:4px}
+.ilink{color:var(--cyan);text-decoration:none} .ilink:hover{text-decoration:underline}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.price-grid{grid-template-columns:1fr}}
+.price-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px}
+.price-card.paid{border-color:var(--teal);box-shadow:0 0 30px rgba(6,214,160,.07)}
+.price-tier{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--muted)} .price-card.paid .price-tier{color:var(--teal)}
+.price-amt{font-family:var(--display);font-weight:700;font-size:38px;margin:8px 0 2px} .price-amt span{font-size:16px;color:var(--muted)}
+.price-annual{font-size:13px;color:var(--cyan);margin-bottom:14px}
+.price-card ul{list-style:none;margin-top:14px}
+.price-card li{font-size:13px;padding:6px 0 6px 20px;position:relative;border-top:1px solid var(--border)}
+.price-card li::before{content:'›';position:absolute;left:4px;color:var(--teal)}
+.log-entry{display:flex;gap:18px;padding:16px 0;border-bottom:1px solid var(--border)}
+.log-entry:last-child{border-bottom:none}
+.log-date{font-family:var(--mono);font-size:12px;color:var(--cyan);flex-shrink:0;width:92px;padding-top:2px}
+.log-title{font-weight:600;font-size:15px;margin-bottom:4px}
+.log-tag{font-family:var(--mono);font-size:9.5px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--muted);text-transform:uppercase;margin-left:4px}
+.log-text{font-size:13.5px;color:var(--muted);line-height:1.6}
+.crumbs{font-family:var(--mono);font-size:12px;color:var(--muted);padding:24px 0 4px;display:flex;gap:10px;align-items:center}
+.crumbs a{color:var(--cyan);text-decoration:none} .crumbs a:hover{text-decoration:underline} .crumbs b{color:var(--text)}
+.detail-head{padding:18px 0 28px;border-bottom:1px solid var(--border)}
+.dh-id{font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--cyan);margin-bottom:10px}
+.dh-meta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.chip{font-family:var(--mono);font-size:11px;border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--muted)}
+.dh-goal{font-size:16px;color:var(--text);max-width:760px;margin-top:8px}
+.dh-deliverable{font-size:14px;color:var(--teal);margin-top:14px;font-family:var(--mono)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.dep-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.dep-label{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.dep-chip{display:inline-block;font-family:var(--mono);font-size:11.5px;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:6px 11px;margin:0 7px 7px 0;transition:.2s}
+.dep-chip.in{color:var(--cyan)} .dep-chip.out{color:var(--teal)}
+.dep-chip:hover{border-color:currentColor;transform:translateY(-1px)}
+.dep-none{font-size:13px;color:var(--muted);font-style:italic}
+.story-chip{display:inline-block;font-family:var(--mono);font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:4px 9px;margin:0 6px 6px 0;color:var(--amber)}
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:.2s}
+.task:hover{border-color:var(--cyan)}
+.task-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.task-name{font-weight:600;font-size:14.5px;flex:1;min-width:200px}
+.task-owner{font-family:var(--mono);font-size:10px;border:1px solid;border-radius:4px;padding:2px 7px;letter-spacing:.5px}
+.task-est{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.task-story{font-family:var(--mono);font-size:10px;color:var(--amber);background:var(--surface2);padding:2px 6px;border-radius:4px}
+.task-ac{font-size:12.5px;color:var(--muted);margin-top:8px;padding-left:2px;line-height:1.5}
+.mini-risks{display:flex;flex-direction:column;gap:8px}
+.mini-risk{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:9px}
+.mini-risk .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0} .mini-risk b{font-weight:600} .mini-risk .risk-prob{margin-left:auto}
+.pager{display:flex;justify-content:space-between;margin:32px 0 60px;font-family:var(--mono);font-size:13px}
+.pager a{color:var(--cyan);text-decoration:none;border:1px solid var(--border);border-radius:7px;padding:9px 15px;transition:.2s}
+.pager a:hover{border-color:var(--cyan)}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.mod-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;text-decoration:none;color:inherit;transition:.25s}
+.mod-card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.mod-kind{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:10px}
+.mod-kind.feature{background:rgba(0,217,255,.13);color:var(--cyan)} .mod-kind.shared{background:rgba(6,214,160,.13);color:var(--teal)}
+.mod-kind.agent{background:rgba(255,165,0,.13);color:var(--amber)} .mod-kind.hook{background:rgba(230,57,70,.13);color:var(--red)}
+.mod-kind.registry{background:rgba(0,102,204,.18);color:var(--cyan)} .mod-kind.plugin{background:rgba(6,214,160,.13);color:var(--teal)}
+.mod-name{font-family:var(--display);font-weight:600;font-size:17px;margin-bottom:6px}
+.mod-role{font-size:13px;color:var(--muted);line-height:1.45;min-height:38px}
+.mod-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.mod-state{font-family:var(--mono);font-size:10.5px;color:var(--cyan)}
+.dm-table{display:flex;flex-direction:column;gap:8px}
+.dm-row{display:grid;grid-template-columns:140px 1fr 200px;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 15px;align-items:start}
+@media(max-width:760px){.dm-row{grid-template-columns:1fr}}
+.dm-entity{font-family:var(--display);font-weight:600;color:var(--cyan);font-size:14px}
+.dm-field{display:inline-block;font-family:var(--mono);font-size:10.5px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;margin:0 5px 5px 0;color:var(--muted)}
+.dm-rel{font-size:12px;color:var(--teal);font-family:var(--mono)}
+footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.8}
+footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:var(--cyan)}
+</style></head>
+<body>
+<div class="grain"></div>
+<div class="topnav"><div class="inner">
+  <a class="brand" href="#/">BB<b>Atlas</b> · atlas</a>
+  <a class="nav" href="#/" data-nav="/">Overview</a>
+  <a class="nav" href="#/arch" data-nav="/arch">Internals</a>
+  <span class="spacer"></span>
+  <span class="nav" style="color:var(--muted)">2026-06-09</span>
+</div></div>
+<div class="wrap">
+<div class="view" data-route="/">
+    <header>
+      <div class="eyebrow"><span class="pulse"></span> Living Atlas · auto-generated · click anything to drill in</div>
+      <h1>BB Atlas</h1>
+      <p class="tagline">JSON-driven living-doc generator. One JSON file → one self-contained interactive HTML atlas — hash-routed drill-down, Monte Carlo schedule simulation, risk register, devlog. Reusable across project plans, constitutions, runbooks, knowledge bases.</p>
+      <div class="statusbar">
+        <div><b>STATUS</b> <span>shipped</span></div>
+        <div><b>PHASE</b> <span>v1.0.0 — CLI + skill landed 2026-06-09</span></div>
+        <div><b>UPDATED</b> <span>2026-06-09</span></div>
+        <div><b>REPO</b> <span>github.com/CaptainRandom00/byte-bridges-atlas</span></div>
+      </div>
+    </header>
+<section><div class="sec-head">Snapshot</div><div class="metrics">
+        <div class="metric" style="animation-delay:0s">
+          <div class="metric-val">1.0.0</div>
+          <div class="metric-label">Version</div>
+          <div class="metric-unit">shipped 2026-06-09</div>
+        </div>
+        <div class="metric" style="animation-delay:0.05s">
+          <div class="metric-val">4</div>
+          <div class="metric-label">Subcommands</div>
+          <div class="metric-unit">generate · init · serve · validate</div>
+        </div>
+        <div class="metric" style="animation-delay:0.1s">
+          <div class="metric-val">0</div>
+          <div class="metric-label">Runtime deps</div>
+          <div class="metric-unit">pure Node — only stdlib</div>
+        </div>
+        <div class="metric" style="animation-delay:0.15000000000000002s">
+          <div class="metric-val">4</div>
+          <div class="metric-label">Lib modules</div>
+          <div class="metric-unit">generate · init · serve · validate</div>
+        </div>
+        <div class="metric" style="animation-delay:0.2s">
+          <div class="metric-val">1</div>
+          <div class="metric-label">Required schema keys</div>
+          <div class="metric-unit">project.name (everything else optional)</div>
+        </div></div></section>
+<section><div class="sec-head">Roadmap · cards link through</div>
+        <div class="roadmap">
+          <div class="rm-now"><div class="rm-col-head">▸ NOW</div><a class="rm-card rm-now linked" href="#/module/cmd-generate">
+          <div class="rm-tag">shipped</div>
+          <div class="rm-title">CLI dispatcher <span class="go">→</span></div>
+          <div class="rm-detail">bb-atlas generate / init / serve / validate. Default subcommand fires when first arg is a .json path.</div></a><a class="rm-card rm-now linked" href="#/module/lib-generate">
+          <div class="rm-tag">shipped</div>
+          <div class="rm-title">Optional-fields fork <span class="go">→</span></div>
+          <div class="rm-detail">All sections optional except project. Missing key → that section is skipped (not crashed).</div></a><a class="rm-card rm-now linked" href="#/module/cmd-serve">
+          <div class="rm-tag">shipped</div>
+          <div class="rm-title">Live-reload serve mode <span class="go">→</span></div>
+          <div class="rm-detail">bb-atlas serve uses fs.watch + SSE to live-reload any open browser tab on JSON change. Zero deps.</div></a><div class="rm-card rm-now">
+          <div class="rm-tag">wired</div>
+          <div class="rm-title">Claude skill auto-discovery</div>
+          <div class="rm-detail">~/.claude/skills/bb-atlas/ → symlink to this repo. SKILL.md surfaces on any session via trigger phrases ('living document', 'navigable dashboard', etc.).</div></div></div>
+          <div class="rm-next"><div class="rm-col-head">▸ NEXT</div><div class="rm-card rm-next">
+          <div class="rm-tag">follow-up</div>
+          <div class="rm-title">Push to GitHub + publish to npm</div>
+          <div class="rm-detail">Currently local-only via npm link. gh repo create + git push, then npm publish (or scope as @captainrandom00/bb-atlas) to make installable for others.</div></div><div class="rm-card rm-next">
+          <div class="rm-tag">follow-up</div>
+          <div class="rm-title">Dedup the bb finance copy</div>
+          <div class="rm-detail">bb finance project still has the older standalone generator. Migrate it to bb-atlas CLI or programmatic import.</div></div><div class="rm-card rm-next">
+          <div class="rm-tag">follow-up</div>
+          <div class="rm-title">Watch glob patterns</div>
+          <div class="rm-detail">bb-atlas serve currently watches one file. Extend to watch templates/ and partials/ if/when those become a thing.</div></div></div>
+          <div class="rm-later"><div class="rm-col-head">▸ LATER</div><div class="rm-card rm-later">
+          <div class="rm-tag">parked</div>
+          <div class="rm-title">Themes</div>
+          <div class="rm-detail">Today: one dark 'mission control' palette. Could ship `--theme` flag with built-in light + alternative dark options, or `--theme path/to/theme.css` for overrides.</div></div><div class="rm-card rm-later">
+          <div class="rm-tag">parked</div>
+          <div class="rm-title">Partial templates / includes</div>
+          <div class="rm-detail">Split a large project.json into per-section JSON files referenced from the root. Useful for large constitutions / multi-team plans.</div></div><div class="rm-card rm-later">
+          <div class="rm-tag">parked</div>
+          <div class="rm-title">Schema documentation generation</div>
+          <div class="rm-detail">Auto-generate the schema reference in SKILL.md from a single source-of-truth schema file (JSON Schema or TypeScript types).</div></div></div>
+        </div></section>
+<section><div class="arch-cta"><a class="big-link" href="#/arch">⊞ Open the Architecture Teardown →</a></div></section>
+<section><div class="sec-head">Known caveats</div><div class="risk-row">
+          <div class="risk-sev" style="background:var(--teal)"></div>
+          <div class="risk-body">
+            <div class="risk-head"><span class="risk-name">fs.watch on macOS doesn't see editor atomic-saves reliably</span></div>
+            <div class="risk-impact">Some editors (vim with :w) replace the file atomically, which can confuse fs.watch — change events stop firing.</div>
+            <div class="risk-mit">↳ If serve stops responding to saves, kill + restart. v1.1 candidate: switch to fs.watchFile (polling) or expose a --poll flag.</div>
+          </div></div><div class="risk-row">
+          <div class="risk-sev" style="background:var(--teal)"></div>
+          <div class="risk-body">
+            <div class="risk-head"><span class="risk-name">innerHTML in the bb finance copy</span></div>
+            <div class="risk-impact">The standalone bb finance generator still uses innerHTML for the sim widget updates — security-hook flagged when copying upstream into this repo.</div>
+            <div class="risk-mit">↳ This repo uses textContent + pre-rendered &lt;b&gt; markers (same render, safer). bb finance dedup sprint will fix theirs.</div>
+          </div></div><div class="risk-row">
+          <div class="risk-sev" style="background:var(--teal)"></div>
+          <div class="risk-body">
+            <div class="risk-head"><span class="risk-name">No JSON Schema document</span></div>
+            <div class="risk-impact">Schema lives in lib/validate.js + the SKILL.md table. Not a machine-readable JSON Schema (no draft-07 .json). IDE auto-complete works via TS for require/import, not the JSON file.</div>
+            <div class="risk-mit">↳ v1.1 candidate: emit schema.json from validate.js (or vice versa).</div>
+          </div></div></section>
+<section><div class="sec-head">Devlog</div>
+        <div class="log-entry"><div class="log-date">2026-06-09</div>
+          <div class="log-body"><div class="log-title">v1.0.0 — CLI dispatcher + skill extracted to standalone repo <span class="log-tag">feat</span><span class="log-tag">cli</span><span class="log-tag">release</span></div>
+            <div class="log-text">Extracted from ~/.claude/skills/bb-atlas/ (inline directory) to ~/Development/byte-bridges-atlas/ (own git repo). bin/bb-atlas dispatcher routes to lib/{generate,init,serve,validate}.js. package.json bin entry → `npm link` puts bb-atlas in $PATH. Skill folder is now a symlink to this repo. Smoke-tested against bb finance baseline: byte-clean (59 lines whitespace + footer diff).</div></div></div>
+        <div class="log-entry"><div class="log-date">2026-06-09</div>
+          <div class="log-body"><div class="log-title">Optional-fields fork — sprints/simulation/pricing/risks/devlog/architecture/milestones now skippable <span class="log-tag">feat</span><span class="log-tag">schema</span></div>
+            <div class="log-text">Forked from the bb finance v2 generator. Replaced unguarded .map()/.find() calls with Array.isArray() guards. Sim widget refactored to textContent (was innerHTML). New CSS chips for mod-kind values agent/hook/registry/plugin (constitutional/non-software use cases).</div></div></div>
+        <div class="log-entry"><div class="log-date">2026-06-09</div>
+          <div class="log-body"><div class="log-title">First non-project atlas — claudeworkflow constitution <span class="log-tag">meta</span></div>
+            <div class="log-text">Validation use case for the optional-fields fork. ~/claudeworkflow/atlas/constitution.json populated with 31 agents (as architecture.modules, kind: agent), 6 hooks (kind: hook), 4 registries (kind: registry), 7 gotchas (risks with risksLabel: 'GOTCHAS'), 9 constitutional change entries (devlog). Sprints/simulation/pricing all omitted. Renders cleanly at 44 views, 95 KB.</div></div></div></section></div>
+<div class="view" data-route="/arch">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <b>Internals</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">BB ATLAS · INTERNALS</div>
+      <h1>What's inside the box</h1>
+      <p class="dh-goal">Single-file CLI dispatcher (bin/bb-atlas) routes to one of four lib/ modules. Each module is a single .js file with zero runtime deps. The generator core is split into a pure function (generateString) that returns HTML, plus a file-I/O wrapper (generate) for the common case. Schema validation runs against the same shape the generator consumes — single source of truth.</p>
+    </div>
+    <div class="sec-head">CLI subcommands · bin/bb-atlas dispatches to these</div><div class="mod-grid">
+      <a class="mod-card linked" href="#/module/cmd-generate">
+        <div class="mod-kind command">COMMAND</div>
+        <div class="mod-name">bb-atlas generate <span class="go">→</span></div>
+        <div class="mod-role">Emit a self-contained interactive HTML atlas. Implicit if first arg is a .json path: `bb-atlas project.json out.html`.</div>
+        <div class="mod-foot"><span class="mod-state">default</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/cmd-init">
+        <div class="mod-kind command">COMMAND</div>
+        <div class="mod-name">bb-atlas init <span class="go">→</span></div>
+        <div class="mod-role">Scaffold a starter project.json + index.html in a target dir (default: cwd). Refuses to overwrite an existing project.json.</div>
+        <div class="mod-foot"><span class="mod-state">scaffold</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/cmd-serve">
+        <div class="mod-kind command">COMMAND</div>
+        <div class="mod-name">bb-atlas serve <span class="go">→</span></div>
+        <div class="mod-role">Watch input.json with fs.watch, regenerate on every save, host at http://localhost:4321 (configurable), live-reload open tabs via SSE.</div>
+        <div class="mod-foot"><span class="mod-state">live-reload</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/cmd-validate">
+        <div class="mod-kind command">COMMAND</div>
+        <div class="mod-name">bb-atlas validate <span class="go">→</span></div>
+        <div class="mod-role">Lint a project.json against the schema without generating. Surfaces missing required fields + type mismatches. Exits 1 on errors.</div>
+        <div class="mod-foot"><span class="mod-state">lint</span></div>
+      </a></div><div class="sec-head">Library modules · zero runtime deps</div><div class="mod-grid">
+      <a class="mod-card linked" href="#/module/lib-generate">
+        <div class="mod-kind lib">LIB</div>
+        <div class="mod-name">lib/generate.js <span class="go">→</span></div>
+        <div class="mod-role">Pure-function generator. Exports {generate, generateString}. The same code path serves the CLI, the serve loop, and any programmatic embedding.</div>
+        <div class="mod-foot"><span class="mod-state">core</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/lib-init">
+        <div class="mod-kind lib">LIB</div>
+        <div class="mod-name">lib/init.js <span class="go">→</span></div>
+        <div class="mod-role">Copies templates/starter.project.json into the target dir, then calls generate() to seed index.html alongside it.</div>
+        <div class="mod-foot"><span class="mod-state">scaffold</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/lib-serve">
+        <div class="mod-kind lib">LIB</div>
+        <div class="mod-name">lib/serve.js <span class="go">→</span></div>
+        <div class="mod-role">fs.watch + http.createServer + SSE subscribers. Zero deps. Injects the EventSource snippet before &lt;/body&gt; of every served response.</div>
+        <div class="mod-foot"><span class="mod-state">live-reload</span></div>
+      </a>
+      <a class="mod-card linked" href="#/module/lib-validate">
+        <div class="mod-kind lib">LIB</div>
+        <div class="mod-name">lib/validate.js <span class="go">→</span></div>
+        <div class="mod-role">Recursive type check against the schema. Returns {errors, warnings} — errors fail the lint, warnings are advisory (e.g. 'simulation set without sprints — Monte Carlo will be skipped').</div>
+        <div class="mod-foot"><span class="mod-state">lint</span></div>
+      </a></div><div class="sec-head">Templates · starter scaffolds</div><div class="mod-grid">
+      <a class="mod-card linked" href="#/module/tmpl-starter">
+        <div class="mod-kind template">TEMPLATE</div>
+        <div class="mod-name">starter.project.json <span class="go">→</span></div>
+        <div class="mod-role">Slim project.json shipped by `bb-atlas init`. Includes the 3 required-feeling sections (project, metrics, roadmap) + 1 devlog entry. Lets a new user see a working atlas on first run.</div>
+        <div class="mod-foot"><span class="mod-state">scaffold</span></div>
+      </a></div>
+    <div class="sec-head">JSON schema · top-level keys in project.json</div><div class="dm-table">
+        <div class="dm-row"><div class="dm-entity">project</div>
+          <div class="dm-fields"><span class="dm-field">name (required)</span><span class="dm-field">tagline</span><span class="dm-field">atlasBrand</span><span class="dm-field">status</span><span class="dm-field">phase</span><span class="dm-field">updated</span><span class="dm-field">repo</span></div>
+          <div class="dm-rel">Brand lockup bolds last word of atlasBrand (or name)</div></div>
+        <div class="dm-row"><div class="dm-entity">metrics[]</div>
+          <div class="dm-fields"><span class="dm-field">label</span><span class="dm-field">value</span><span class="dm-field">unit</span></div>
+          <div class="dm-rel">Snapshot tiles, auto-fit grid</div></div>
+        <div class="dm-row"><div class="dm-entity">roadmap</div>
+          <div class="dm-fields"><span class="dm-field">now[]</span><span class="dm-field">next[]</span><span class="dm-field">later[]</span></div>
+          <div class="dm-rel">Each card: {title, detail, tag, link?}; link = hash route</div></div>
+        <div class="dm-row"><div class="dm-entity">sprints[]</div>
+          <div class="dm-fields"><span class="dm-field">id</span><span class="dm-field">name</span><span class="dm-field">weeks[start,end]</span><span class="dm-field">points</span><span class="dm-field">status</span><span class="dm-field">risk</span><span class="dm-field">tasks[]</span></div>
+          <div class="dm-rel">Each becomes #/sprint/&lt;id&gt; page; tasks have ac (acceptance criteria)</div></div>
+        <div class="dm-row"><div class="dm-entity">architecture</div>
+          <div class="dm-fields"><span class="dm-field">summary</span><span class="dm-field">modules[]</span><span class="dm-field">dataModel[]</span><span class="dm-field">kindLabels{}</span><span class="dm-field">title?</span><span class="dm-field">eyebrow?</span><span class="dm-field">crumb?</span><span class="dm-field">navLabel?</span></div>
+          <div class="dm-rel">modules → per-module pages at #/module/&lt;id&gt;</div></div>
+        <div class="dm-row"><div class="dm-entity">risks[]</div>
+          <div class="dm-fields"><span class="dm-field">name</span><span class="dm-field">severity</span><span class="dm-field">prob</span><span class="dm-field">delayWeeks</span><span class="dm-field">impact</span><span class="dm-field">mitigation</span><span class="dm-field">sprint?</span></div>
+          <div class="dm-rel">prob × delayWeeks feed the Monte Carlo if simulation set; risksLabel overrides section heading (e.g. 'GOTCHAS')</div></div>
+        <div class="dm-row"><div class="dm-entity">simulation</div>
+          <div class="dm-fields"><span class="dm-field">totalPoints</span><span class="dm-field">velocityMean</span><span class="dm-field">velocityStd</span><span class="dm-field">sprintWeeks</span><span class="dm-field">runs</span><span class="dm-field">note</span></div>
+          <div class="dm-rel">Auto-disabled if no sprints. P50/P80/P90 reported in-browser.</div></div>
+        <div class="dm-row"><div class="dm-entity">devlog[]</div>
+          <div class="dm-fields"><span class="dm-field">date</span><span class="dm-field">title</span><span class="dm-field">tags[]</span><span class="dm-field">body</span></div>
+          <div class="dm-rel">Reverse-chronological; devlogLabel overrides section heading</div></div></div></div>
+<div class="view" data-route="/module/cmd-generate">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas generate</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">COMMAND MODULE</div>
+      <h1>bb-atlas generate</h1>
+      <div class="dh-meta"><span class="chip">default</span></div>
+      <p class="dh-goal">Emit a self-contained interactive HTML atlas. Implicit if first arg is a .json path: `bb-atlas project.json out.html`.</p>
+      <div class="dh-deliverable">Resolves output path: explicit 2nd arg → D.output (relative to input dir) → './index.html' beside the input. Creates parent dirs as needed.</div>
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/cmd-init">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas init</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">COMMAND MODULE</div>
+      <h1>bb-atlas init</h1>
+      <div class="dh-meta"><span class="chip">scaffold</span></div>
+      <p class="dh-goal">Scaffold a starter project.json + index.html in a target dir (default: cwd). Refuses to overwrite an existing project.json.</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-init">lib/init.js</a><a class="dep-chip in" href="#/module/tmpl-starter">starter.project.json</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/cmd-serve">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas serve</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">COMMAND MODULE</div>
+      <h1>bb-atlas serve</h1>
+      <div class="dh-meta"><span class="chip">live-reload</span></div>
+      <p class="dh-goal">Watch input.json with fs.watch, regenerate on every save, host at http://localhost:4321 (configurable), live-reload open tabs via SSE.</p>
+      <div class="dh-deliverable">Debounces fs.watch by 80ms (editors emit multiple events per save). Injects a 5-line EventSource snippet into the served HTML for live-reload. Opens the default browser on boot unless --no-open.</div>
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-serve">lib/serve.js</a><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/cmd-validate">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas validate</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">COMMAND MODULE</div>
+      <h1>bb-atlas validate</h1>
+      <div class="dh-meta"><span class="chip">lint</span></div>
+      <p class="dh-goal">Lint a project.json against the schema without generating. Surfaces missing required fields + type mismatches. Exits 1 on errors.</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-validate">lib/validate.js</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/lib-generate">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/generate.js</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">LIB MODULE</div>
+      <h1>lib/generate.js</h1>
+      <div class="dh-meta"><span class="chip">core</span></div>
+      <p class="dh-goal">Pure-function generator. Exports {generate, generateString}. The same code path serves the CLI, the serve loop, and any programmatic embedding.</p>
+      <div class="dh-deliverable">generateString(D, dataPathHint?) takes parsed JSON, returns {html, viewCount}. generate({dataPath, outPath}) wraps it with file I/O. Script mode (`node lib/generate.js`) is kept for back-compat with the bb finance copy.</div>
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/lib-init">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/init.js</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">LIB MODULE</div>
+      <h1>lib/init.js</h1>
+      <div class="dh-meta"><span class="chip">scaffold</span></div>
+      <p class="dh-goal">Copies templates/starter.project.json into the target dir, then calls generate() to seed index.html alongside it.</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a><a class="dep-chip in" href="#/module/tmpl-starter">starter.project.json</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/lib-serve">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/serve.js</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">LIB MODULE</div>
+      <h1>lib/serve.js</h1>
+      <div class="dh-meta"><span class="chip">live-reload</span></div>
+      <p class="dh-goal">fs.watch + http.createServer + SSE subscribers. Zero deps. Injects the EventSource snippet before &lt;/body&gt; of every served response.</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/lib-validate">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/validate.js</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">LIB MODULE</div>
+      <h1>lib/validate.js</h1>
+      <div class="dh-meta"><span class="chip">lint</span></div>
+      <p class="dh-goal">Recursive type check against the schema. Returns {errors, warnings} — errors fail the lint, warnings are advisory (e.g. 'simulation set without sprints — Monte Carlo will be skipped').</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
+      
+    </div>
+    </div>
+<div class="view" data-route="/module/tmpl-starter">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>starter.project.json</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">TEMPLATE MODULE</div>
+      <h1>starter.project.json</h1>
+      <div class="dh-meta"><span class="chip">scaffold</span></div>
+      <p class="dh-goal">Slim project.json shipped by `bb-atlas init`. Includes the 3 required-feeling sections (project, metrics, roadmap) + 1 devlog entry. Lets a new user see a working atlas on first run.</p>
+      
+    </div>
+    <div class="detail-grid">
+      <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
+      
+    </div>
+    </div>
+<footer>Living atlas for <b>BB Atlas</b> · edit <code>project.json</code> &rarr; <code>bb-atlas generate</code> &rarr; refresh<br>Generated 2026-06-09 10:21 · 9 modules<br>Built with <b style="color:var(--cyan)">Byte Bridges Atlas</b> · reusable living-doc generator</footer>
+</div>
+<script>
+const SIM=null,RISKS=[{"name":"fs.watch on macOS doesn't see editor atomic-saves reliably","severity":"low","impact":"Some editors (vim with :w) replace the file atomically, which can confuse fs.watch — change events stop firing.","mitigation":"If serve stops responding to saves, kill + restart. v1.1 candidate: switch to fs.watchFile (polling) or expose a --poll flag."},{"name":"innerHTML in the bb finance copy","severity":"low","impact":"The standalone bb finance generator still uses innerHTML for the sim widget updates — security-hook flagged when copying upstream into this repo.","mitigation":"This repo uses textContent + pre-rendered <b> markers (same render, safer). bb finance dedup sprint will fix theirs."},{"name":"No JSON Schema document","severity":"low","impact":"Schema lives in lib/validate.js + the SKILL.md table. Not a machine-readable JSON Schema (no draft-07 .json). IDE auto-complete works via TS for require/import, not the JSON file.","mitigation":"v1.1 candidate: emit schema.json from validate.js (or vice versa)."}];
+function router(){
+  let h=location.hash.replace(/^#/,'')||'/';
+  if(h==='')h='/';
+  let view=[...document.querySelectorAll('.view')].find(v=>v.dataset.route===h);
+  if(!view)view=document.querySelector('.view[data-route="/"]');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  view.classList.add('active');
+  document.querySelectorAll('.topnav a.nav').forEach(a=>a.classList.toggle('active',a.dataset.nav===view.dataset.route));
+  window.scrollTo({top:0,behavior:'instant'});
+  if(view.dataset.route==='/'&&SIM)runSim();
+}
+window.addEventListener('hashchange',router);
+function gauss(m,s){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return m+s*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function runSim(){
+  if(!SIM)return;
+  const c=document.getElementById('simCanvas');if(!c)return;
+  const res=[];
+  for(let i=0;i<SIM.runs;i++){let pts=0,sp=0;while(pts<SIM.totalPoints&&sp<40){pts+=Math.max(6,gauss(SIM.velocityMean,SIM.velocityStd));sp++;}
+    let wk=sp*SIM.sprintWeeks;for(const r of RISKS){if(typeof r.prob==='number'&&Math.random()<r.prob)wk+=(r.delayWeeks||0);}res.push(wk);}
+  res.sort((a,b)=>a-b);const pct=p=>res[Math.floor(p*res.length)];
+  const p50=pct(.5),p80=pct(.8),p90=pct(.9);
+  document.getElementById('p50').textContent=String(Math.round(p50));
+  document.getElementById('p80').textContent=String(Math.round(p80));
+  document.getElementById('p90').textContent=String(Math.round(p90));
+  document.getElementById('simCaption').textContent=SIM.note+' — '+SIM.runs.toLocaleString()+' runs · '+SIM.totalPoints+' pts · velocity '+SIM.velocityMean+'±'+SIM.velocityStd+'.';
+  drawHist(res,p50,p80,p90);
+}
+function drawHist(data,p50,p80,p90){
+  const c=document.getElementById('simCanvas'),dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
+  c.width=w*dpr;c.height=h*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);x.clearRect(0,0,w,h);
+  const min=Math.floor(data[0]),max=Math.ceil(data[data.length-1]),bins=Math.max(8,max-min),counts=new Array(bins).fill(0);
+  data.forEach(v=>{let b=Math.min(bins-1,Math.floor((v-min)/(max-min)*bins));counts[b]++;});
+  const peak=Math.max(...counts),bw=w/bins,css=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+  for(let i=0;i<bins;i++){const bh=(counts[i]/peak)*(h-30),wk=min+(i/bins)*(max-min);let col=css('--cyan');if(wk>p80)col=css('--amber');if(wk>p90)col=css('--red');
+    const g=x.createLinearGradient(0,h-bh,0,h);g.addColorStop(0,col);g.addColorStop(1,col+'22');x.fillStyle=g;x.fillRect(i*bw+1,h-bh-18,bw-2,bh);}
+  x.fillStyle=css('--muted');x.font='10px IBM Plex Mono';x.textAlign='center';
+  for(let i=0;i<=4;i++){const wk=Math.round(min+(i/4)*(max-min));x.fillText('W'+wk,(i/4)*w,h-3);}
+  [{v:p50,c:css('--cyan')},{v:p80,c:css('--amber')},{v:p90,c:css('--red')}].forEach(m=>{const px=((m.v-min)/(max-min))*w;x.strokeStyle=m.c;x.lineWidth=1.5;x.setLineDash([4,3]);x.beginPath();x.moveTo(px,0);x.lineTo(px,h-18);x.stroke();x.setLineDash([]);});
+}
+router();
+window.addEventListener('resize',()=>{if(SIM&&document.querySelector('.view[data-route="/"]').classList.contains('active'))runSim();});
+</script>
+</body></html>
