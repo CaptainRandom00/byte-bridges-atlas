@@ -1,0 +1,141 @@
+#!/usr/bin/env node
+/**
+ * bb-atlas — CLI dispatcher
+ *
+ * Subcommands:
+ *   generate <input.json> [output.html]   default — emit atlas HTML
+ *   init [dir]                            scaffold a starter project.json + index.html
+ *   serve <input.json> [--port N] [--no-open]   watch + regenerate + live-reload
+ *   validate <input.json>                 schema lint without generating
+ *
+ * Flags:
+ *   --help, -h        show usage
+ *   --version, -v     show version
+ */
+const fs = require('fs');
+const path = require('path');
+
+const pkg = require(path.resolve(__dirname, '..', 'package.json'));
+const { generate } = require(path.resolve(__dirname, '..', 'lib', 'generate'));
+const { init } = require(path.resolve(__dirname, '..', 'lib', 'init'));
+const { validate } = require(path.resolve(__dirname, '..', 'lib', 'validate'));
+const { serve } = require(path.resolve(__dirname, '..', 'lib', 'serve'));
+
+const HELP = `bb-atlas — JSON-driven living-doc generator (v${pkg.version})
+
+USAGE
+  bb-atlas <subcommand> [args]
+
+SUBCOMMANDS
+  generate <input.json> [output.html]
+      Generate a self-contained interactive HTML atlas.
+      Output defaults to ./index.html next to the input.
+      (Default subcommand if first arg is a .json path.)
+
+  init [dir]
+      Scaffold a starter project.json + index.html in <dir>
+      (default: current directory). Refuses to overwrite existing files.
+
+  serve <input.json> [--port N] [--no-open]
+      Watch input.json, regenerate on every save, host at
+      http://localhost:4321 (default), live-reload open tabs.
+
+  validate <input.json>
+      Lint the JSON against the schema without generating. Exits 1 on errors.
+
+FLAGS
+  -h, --help        show this message
+  -v, --version     show version
+
+EXAMPLES
+  bb-atlas init my-plan
+  bb-atlas generate my-plan/project.json my-plan/index.html
+  bb-atlas serve my-plan/project.json --port 5000
+  bb-atlas validate my-plan/project.json
+
+SCHEMA + REFERENCE EXAMPLES
+  See ${path.relative(process.cwd(), path.resolve(__dirname, '..', 'SKILL.md'))} (full schema)
+  See ${path.relative(process.cwd(), path.resolve(__dirname, '..', 'project.template.json'))} (worked example — bb finance iOS plan)
+`;
+
+function exitWith(code, msg) {
+  if (msg) process.stderr.write(msg.endsWith('\n') ? msg : msg + '\n');
+  process.exit(code);
+}
+
+function parseFlag(args, name) {
+  const idx = args.indexOf(name);
+  if (idx === -1) return null;
+  args.splice(idx, 1);
+  return true;
+}
+
+function parseValueFlag(args, name) {
+  const idx = args.indexOf(name);
+  if (idx === -1) return null;
+  const val = args[idx + 1];
+  args.splice(idx, 2);
+  return val;
+}
+
+function main(argv) {
+  const args = argv.slice(2);
+
+  if (args.length === 0 || args[0] === '-h' || args[0] === '--help') return exitWith(0, HELP);
+  if (args[0] === '-v' || args[0] === '--version') return exitWith(0, `bb-atlas ${pkg.version}`);
+
+  let cmd = args[0];
+  let rest = args.slice(1);
+
+  if (cmd.endsWith('.json') && fs.existsSync(cmd)) {
+    rest = args.slice(0);
+    cmd = 'generate';
+  }
+
+  try {
+    if (cmd === 'generate') {
+      const dataPath = rest[0];
+      const outPath = rest[1] || null;
+      if (!dataPath) return exitWith(2, 'generate: missing <input.json>\n' + HELP);
+      if (!fs.existsSync(dataPath)) return exitWith(2, `generate: input not found: ${dataPath}`);
+      const { outPath: out, sizeBytes, viewCount } = generate({ dataPath, outPath });
+      process.stdout.write(`✓ ${out} (${(sizeBytes/1024).toFixed(1)} KB · ${viewCount} views)\n`);
+      return;
+    }
+
+    if (cmd === 'init') {
+      const dir = rest[0] || '.';
+      const { jsonPath, htmlPath, sizeBytes, viewCount } = init(dir);
+      process.stdout.write(`✓ ${jsonPath}\n✓ ${htmlPath} (${(sizeBytes/1024).toFixed(1)} KB · ${viewCount} views)\n\nNext:\n  bb-atlas serve ${path.relative(process.cwd(), jsonPath)}\n  or\n  edit ${path.relative(process.cwd(), jsonPath)} and re-run bb-atlas generate\n`);
+      return;
+    }
+
+    if (cmd === 'serve') {
+      const noOpen = parseFlag(rest, '--no-open');
+      const portStr = parseValueFlag(rest, '--port');
+      const port = portStr ? parseInt(portStr, 10) : 4321;
+      if (Number.isNaN(port)) return exitWith(2, `serve: invalid --port value`);
+      const dataPath = rest[0];
+      if (!dataPath) return exitWith(2, 'serve: missing <input.json>\n' + HELP);
+      serve(dataPath, { port, openBrowser: !noOpen });
+      return;
+    }
+
+    if (cmd === 'validate') {
+      const dataPath = rest[0];
+      if (!dataPath) return exitWith(2, 'validate: missing <input.json>\n' + HELP);
+      const { errors, warnings } = validate(dataPath);
+      warnings.forEach(w => process.stdout.write(`! ${w}\n`));
+      errors.forEach(e => process.stderr.write(`✗ ${e}\n`));
+      if (errors.length) return exitWith(1, `\n${errors.length} error(s), ${warnings.length} warning(s)`);
+      process.stdout.write(`✓ ${dataPath} valid (${warnings.length} warning(s))\n`);
+      return;
+    }
+
+    return exitWith(2, `unknown subcommand: ${cmd}\n` + HELP);
+  } catch (e) {
+    return exitWith(1, `✗ ${e.message}`);
+  }
+}
+
+main(process.argv);

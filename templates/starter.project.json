@@ -1,0 +1,34 @@
+{
+  "project": {
+    "name": "Your Project Name",
+    "tagline": "One-sentence description that goes under the title.",
+    "atlasBrand": "Your Project",
+    "status": "active",
+    "phase": "planning",
+    "updated": "2026-06-09"
+  },
+  "metrics": [
+    { "label": "Replace me", "value": "12", "unit": "weeks" },
+    { "label": "Replace me too", "value": "3", "unit": "people" },
+    { "label": "And this one", "value": "0", "unit": "blockers" }
+  ],
+  "roadmap": {
+    "now": [
+      { "tag": "active", "title": "What you are working on right now", "detail": "Short explanation." }
+    ],
+    "next": [
+      { "tag": "next", "title": "Up next after the current thing", "detail": "Short explanation." }
+    ],
+    "later": [
+      { "tag": "later", "title": "Parked for now", "detail": "Short explanation." }
+    ]
+  },
+  "devlog": [
+    {
+      "date": "2026-06-09",
+      "title": "Atlas initialised",
+      "tags": ["meta"],
+      "body": "First entry — scaffolded with `bb-atlas init`. Edit project.json and re-run `bb-atlas generate project.json index.html` (or use `bb-atlas serve project.json` for auto-reload)."
+    }
+  ]
+}

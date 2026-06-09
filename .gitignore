@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+*.log
+*.tmp
+# Generated atlas outputs from local experiments
+/tmp/
+/scratch/

@@ -1,0 +1,38 @@
+{
+  "name": "byte-bridges-atlas",
+  "version": "1.0.0",
+  "description": "JSON-driven living-doc generator. One JSON file → one self-contained interactive HTML atlas (hash-routed drill-down, Monte Carlo schedule simulation, risk register, devlog). Reusable across project plans, constitutions, runbooks, and knowledge bases.",
+  "bin": {
+    "bb-atlas": "bin/bb-atlas"
+  },
+  "main": "lib/generate.js",
+  "files": [
+    "bin/",
+    "lib/",
+    "templates/",
+    "SKILL.md",
+    "project.template.json",
+    "README.md"
+  ],
+  "scripts": {
+    "smoke": "node bin/bb-atlas validate project.template.json && node bin/bb-atlas generate project.template.json /tmp/bb-atlas-smoke.html"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "living-document",
+    "atlas",
+    "dashboard",
+    "static-site-generator",
+    "project-management",
+    "monte-carlo",
+    "documentation"
+  ],
+  "author": "CaptainRandom00",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaptainRandom00/byte-bridges-atlas.git"
+  }
+}

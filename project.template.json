@@ -1,0 +1,221 @@
+{
+  "project": {
+    "name": "Byte Bridges Finance",
+    "tagline": "Offline-first personal finance for iOS — forecasting, honesty, no bank login.",
+    "status": "Planning complete → Sprint 1 ready",
+    "phase": "Pre-build",
+    "updated": "2026-06-08",
+    "repo": "bb-finance",
+    "atlasBrand": "Byte Bridges"
+  },
+  "output": "docs/bbatlas/index.html",
+  "metrics": [
+    { "label": "Timeline to live", "value": "13–14", "unit": "weeks" },
+    { "label": "MVP effort", "value": "124", "unit": "story points" },
+    { "label": "Team", "value": "2", "unit": "engineers" },
+    { "label": "Sprints to launch", "value": "6", "unit": "x 2 weeks" },
+    { "label": "Paid price", "value": "£3.99", "unit": "/mo · £29.99/yr" },
+    { "label": "Velocity", "value": "~24", "unit": "pts/sprint" }
+  ],
+  "roadmap": {
+    "now": [
+      { "title": "Sprint 1 — Foundations", "detail": "CoreData schema, design tokens, DataManager, onboarding skeleton", "tag": "20 pts", "link": "sprint/1" },
+      { "title": "Sprint board setup", "detail": "Import 60+ tickets into Linear/Jira", "tag": "infra" }
+    ],
+    "next": [
+      { "title": "Core data management", "detail": "Accounts, categories, dashboard skeleton", "tag": "S2", "link": "sprint/2" },
+      { "title": "Transaction engine", "detail": "CRUD, recurring, AI hint stub", "tag": "S3", "link": "sprint/3" },
+      { "title": "Forecast & paywall", "detail": "Forecast algorithm, StoreKit, 8-week gate", "tag": "S4 · high risk", "link": "sprint/4" }
+    ],
+    "later": [
+      { "title": "QA, polish & submit", "detail": "Accessibility, performance, App Store submission", "tag": "S5–S6", "link": "sprint/5" },
+      { "title": "v1.1 features", "detail": "Reports, AI learning, widgets, insights", "tag": "S7–S8", "link": "sprint/7" },
+      { "title": "Bank API (v1.2)", "detail": "Open Banking research — deferred", "tag": "backlog" }
+    ]
+  },
+  "architecture": {
+    "summary": "iOS · SwiftUI · MVVM · offline-first CoreData · 6 feature modules + 2 shared layers. No cloud sync in v1.",
+    "modules": [
+      { "id": "dashboard", "name": "Dashboard", "kind": "feature", "state": "DashboardViewModel",
+        "role": "Hero effective-balance, account cards, recent transactions, forecast preview",
+        "depends": ["data", "ui", "transactions", "forecast"], "stories": ["US-004", "US-011"], "sprints": [2, 4],
+        "detail": "Computes effective balance = Σ(account balances) − Σ(recurring due ≤30 days). Pull-to-refresh. Renders a 4-week sparkline plus a safe/caution badge sourced from the Forecast module." },
+      { "id": "accounts", "name": "Accounts", "kind": "feature", "state": "AccountListViewModel",
+        "role": "Add, list, edit, delete financial accounts",
+        "depends": ["data", "ui"], "stories": ["US-001", "US-008"], "sprints": [2],
+        "detail": "Account types: current, savings, credit, cash. Delete cascades to the account's transactions (no orphans). Detail screen shows the account plus its transaction history." },
+      { "id": "transactions", "name": "Transactions", "kind": "feature", "state": "TransactionViewModel",
+        "role": "Add, edit, list and categorise transactions; recurring; AI hint",
+        "depends": ["data", "ui", "categories"], "stories": ["US-002", "US-006", "US-007", "US-009"], "sprints": [3],
+        "detail": "Largest module. Saving a transaction updates the linked account balance atomically. Recurring uses the RecurringFrequency enum. AI hint suggests a category from the merchant via the AIHintEngine (≥0.6 confidence threshold)." },
+      { "id": "forecast", "name": "Forecasting", "kind": "feature", "state": "ForecastViewModel",
+        "role": "4-week (free) / 8-week (paid) cashflow projection + safe-to-spend",
+        "depends": ["data", "transactions", "settings"], "stories": ["US-011", "US-012"], "sprints": [4],
+        "detail": "Daily projection applying recurring transactions; emits weekly snapshots. The 8-week window is gated by SettingsViewModel.isSubscribed. Safe-to-spend = projected end balance > 0. The key product differentiator." },
+      { "id": "categories", "name": "Categories", "kind": "feature", "state": "CategoryViewModel",
+        "role": "100+ default categories, custom categories, merchant mapping",
+        "depends": ["data"], "stories": ["US-005"], "sprints": [2],
+        "detail": "Seeded once from categories-seed.json on first launch. Each category carries a merchant list used by the AI hint engine. Custom categories flagged isCustom. Merchant intelligence is server-updatable in a later version." },
+      { "id": "settings", "name": "Settings & Paywall", "kind": "feature", "state": "SettingsViewModel · PaywallViewModel",
+        "role": "Account management, subscription status, StoreKit paywall, about/privacy",
+        "depends": ["data", "storekit"], "stories": ["US-013"], "sprints": [4],
+        "detail": "StoreKit 2 handles purchase, restore and receipt validation. isSubscribed is the single source of truth the Forecast module reads to gate the 8-week view. Paywall is contextual, not aggressive — triggered at the moment of intent." },
+      { "id": "data", "name": "Data Layer", "kind": "shared", "state": "DataManager (singleton)",
+        "role": "Offline-first CoreData persistence + repositories",
+        "depends": [], "stories": ["US-INFRA-1"], "sprints": [1],
+        "detail": "The foundation everything depends on. CoreData stack, DataManager singleton, AccountRepository + TransactionRepository (typed CRUD, throws on error). Lightweight migration strategy preserves data across app upgrades." },
+      { "id": "ui", "name": "UI Components", "kind": "shared", "state": "Design tokens + SwiftUI components",
+        "role": "Reusable components, colour/typography tokens, dark mode",
+        "depends": [], "stories": ["US-INFRA-2"], "sprints": [1],
+        "detail": "Design tokens (colours in Asset Catalog, 4–64px spacing scale). Button / Card / Input / Badge components, all dark-mode-first and accessibility-labelled. Form helpers with inline validation." }
+    ],
+    "dataModel": [
+      { "entity": "User", "fields": ["id", "subscriptionTier", "createdAt"], "relations": "has many → Account" },
+      { "entity": "Account", "fields": ["id", "name", "type", "balance", "currency", "createdAt", "updatedAt"], "relations": "belongs to User · has many → Transaction" },
+      { "entity": "Transaction", "fields": ["id", "accountId", "date", "amount", "payee", "category", "notes", "isRecurring", "recurringFreq", "createdAt"], "relations": "belongs to Account · uses → Category" },
+      { "entity": "Category", "fields": ["id", "name", "color", "isCustom", "merchantMapping", "createdAt"], "relations": "used by many Transactions" },
+      { "entity": "RecurringPattern", "fields": ["frequency (enum)", "daysInterval", "nextOccurrence"], "relations": "embedded on Transaction" }
+    ]
+  },
+  "sprints": [
+    { "id": 1, "name": "Foundations", "weeks": [1, 2], "points": 20, "status": "ready", "risk": "low",
+      "deliverable": "Runnable app with dummy data, design system locked",
+      "goal": "Stand up the skeleton everything else builds on — data layer, design system, and app shell. Nothing here is blocked; this is the critical-path starter.",
+      "depends": [], "unblocks": [2, 3, 4, 5, 6],
+      "tasks": [
+        { "name": "Define CoreData model", "est": 3, "owner": "Data", "story": "US-INFRA-1", "ac": "All 5 entities (User, Account, Transaction, Category, RecurringPattern) with attributes + relationships; model compiles" },
+        { "name": "DataManager singleton", "est": 2, "owner": "Data", "story": "US-INFRA-1", "ac": "Typed fetch/save helpers; unit-tested against in-memory store" },
+        { "name": "Repository pattern", "est": 3, "owner": "Data", "story": "US-INFRA-1", "ac": "AccountRepository + TransactionRepository; typed CRUD; throws on error" },
+        { "name": "Migration test harness", "est": 2, "owner": "Data", "story": "US-INFRA-1", "ac": "Can simulate v1→v2 schema migration with no data loss in tests" },
+        { "name": "Design tokens", "est": 3, "owner": "iOS", "story": "US-INFRA-2", "ac": "All colours in Asset Catalog; 4–64px spacing scale as constants" },
+        { "name": "Core components", "est": 3, "owner": "iOS", "story": "US-INFRA-2", "ac": "Button/Card/Input/Badge match design spec; dark mode; SwiftUI previews" },
+        { "name": "Form helpers", "est": 2, "owner": "iOS", "story": "US-INFRA-2", "ac": "Reusable validated text field with inline error state" },
+        { "name": "OnboardingState + gating", "est": 1, "owner": "Data", "story": "US-003", "ac": "Resolves notStarted / needsFirstAccount / canViewDashboard correctly" },
+        { "name": "Welcome + first-account skeleton", "est": 1, "owner": "iOS", "story": "US-003", "ac": "Welcome screen routes to AddAccount when no accounts exist" }
+      ] },
+    { "id": 2, "name": "Core Data Mgmt", "weeks": [3, 4], "points": 25, "status": "planned", "risk": "med",
+      "deliverable": "Add account, see balance, manage accounts",
+      "goal": "Make the app genuinely usable for accounts and categories, and stand up the dashboard shell. First slice of real value.",
+      "depends": [1], "unblocks": [3, 4],
+      "tasks": [
+        { "name": "AddAccountForm", "est": 3, "owner": "iOS", "story": "US-001", "ac": "Validates required fields; currency defaults to GBP; saves on submit" },
+        { "name": "Wire form to AccountRepository", "est": 1, "owner": "Data", "story": "US-001", "ac": "New account persists; appears in list immediately" },
+        { "name": "Account type picker", "est": 1, "owner": "iOS", "story": "US-001", "ac": "Picker shows current/savings/credit/cash; selection persists" },
+        { "name": "AccountList view", "est": 2, "owner": "iOS", "story": "US-008", "ac": "Lists accounts with name/type/balance; pull-to-refresh" },
+        { "name": "Account Detail screen", "est": 2, "owner": "iOS", "story": "US-008", "ac": "Shows account info plus its transactions" },
+        { "name": "Edit account", "est": 2, "owner": "Both", "story": "US-008", "ac": "Changes persist; validation on empty name" },
+        { "name": "Delete account (cascade)", "est": 2, "owner": "Both", "story": "US-008", "ac": "Confirm dialog; deletes account and its transactions; no orphans" },
+        { "name": "Author categories-seed.json", "est": 2, "owner": "Data", "story": "US-005", "ac": "100+ entries, each with name/colour/icon/merchants" },
+        { "name": "CategoryMigration seeding", "est": 2, "owner": "Data", "story": "US-005", "ac": "Categories seeded once; not duplicated on relaunch" },
+        { "name": "Category list + colour coding", "est": 3, "owner": "iOS", "story": "US-005", "ac": "All categories display; searchable; correct colour swatches" },
+        { "name": "Lightweight migration + versioning", "est": 3, "owner": "Data", "story": "US-INFRA-3", "ac": "App upgrade preserves data; version bump tested" },
+        { "name": "Dashboard skeleton", "est": 2, "owner": "iOS", "story": "US-004", "ac": "Shows effective balance number; placeholder for the rest" }
+      ] },
+    { "id": 3, "name": "Transactions", "weeks": [5, 6], "points": 24, "status": "planned", "risk": "med",
+      "deliverable": "Full transaction CRUD, recurring payments",
+      "goal": "The core loop: record, edit and categorise money movements, with recurring patterns feeding the forecast.",
+      "depends": [1, 2], "unblocks": [4],
+      "tasks": [
+        { "name": "AddTransaction modal", "est": 5, "owner": "iOS", "story": "US-002", "ac": "Date/amount/payee/account/category/notes; date defaults today; amount validated as currency" },
+        { "name": "Wire to repo + update balance", "est": 3, "owner": "Data", "story": "US-002", "ac": "Saving a transaction updates the linked account balance atomically" },
+        { "name": "Transaction list", "est": 3, "owner": "iOS", "story": "US-002", "ac": "Newest-first; category colour + amount sign" },
+        { "name": "Edit flow (pre-filled)", "est": 2, "owner": "iOS", "story": "US-009", "ac": "Tapping a transaction opens a pre-filled editor" },
+        { "name": "Recalc balance on edit/delete", "est": 1, "owner": "Data", "story": "US-009", "ac": "Editing amount adjusts balance; delete reverses it" },
+        { "name": "Transaction detail view", "est": 2, "owner": "iOS", "story": "US-009", "ac": "Shows full detail incl. notes" },
+        { "name": "RecurringFrequency enum + fields", "est": 2, "owner": "Data", "story": "US-007", "ac": "8 cases; stored on Transaction; nextOccurrence() correct" },
+        { "name": "Recurring toggle + picker", "est": 2, "owner": "iOS", "story": "US-007", "ac": "Toggle reveals frequency picker; selection persists" },
+        { "name": "Recurring-due query helper", "est": 1, "owner": "Data", "story": "US-007", "ac": "Returns recurring transactions due within an N-week window" },
+        { "name": "AIHintEngine", "est": 2, "owner": "Data", "story": "US-006", "ac": "Returns category + confidence; suggests at threshold ≥0.6" },
+        { "name": "Wire hint into Add UI", "est": 1, "owner": "iOS", "story": "US-006", "ac": "Suggestion appears as payee typed; Use/Skip buttons work" }
+      ] },
+    { "id": 4, "name": "Forecast & Paywall", "weeks": [7, 8], "points": 25, "status": "planned", "risk": "high",
+      "deliverable": "MVP feature-complete, paywall gated",
+      "goal": "Ship the differentiator (forecast) and the business model (paywall). Highest-risk sprint — StoreKit is the wildcard.",
+      "depends": [1, 2, 3], "unblocks": [5],
+      "tasks": [
+        { "name": "Forecast algorithm", "est": 5, "owner": "Data", "story": "US-011", "ac": "Projects balance applying recurring txns; returns weekly snapshots" },
+        { "name": "Forecast chart (SwiftUI)", "est": 4, "owner": "iOS", "story": "US-011", "ac": "Line chart with week markers; renders 4 or 8 weeks" },
+        { "name": "Dashboard forecast preview", "est": 1, "owner": "iOS", "story": "US-011", "ac": "Dashboard shows 4-week sparkline + safe/caution badge" },
+        { "name": "Safe-to-spend calculation", "est": 2, "owner": "Data", "story": "US-012", "ac": "Green if projected end balance > 0; red otherwise; configurable threshold" },
+        { "name": "Indicator component", "est": 1, "owner": "iOS", "story": "US-012", "ac": "Clear green/red visual with label" },
+        { "name": "StoreKit 2 integration", "est": 5, "owner": "Data", "story": "US-013", "ac": "Purchase + restore; subscription state persists; sandbox-tested" },
+        { "name": "Paywall conditional logic", "est": 2, "owner": "Data", "story": "US-013", "ac": "Free sees 4 weeks + upgrade prompt; paid sees 8 weeks" },
+        { "name": "Paywall modal", "est": 3, "owner": "iOS", "story": "US-013", "ac": "Shows free vs paid; purchase button triggers StoreKit" },
+        { "name": "Settings + subscription status", "est": 2, "owner": "iOS", "story": "US-013", "ac": "Shows current tier + renewal/expiry; restore button" }
+      ] },
+    { "id": 5, "name": "QA & Polish", "weeks": [9, 10], "points": 18, "status": "planned", "risk": "med",
+      "deliverable": "App Store ready, quality locked",
+      "goal": "Make it accessible, fast and stable. Accessibility shouldn't start here — but it's verified and signed off here.",
+      "depends": [4], "unblocks": [6],
+      "tasks": [
+        { "name": "Accessibility pass (VoiceOver, contrast, Dynamic Type)", "est": 5, "owner": "iOS", "story": "US-014", "ac": "Every interactive element labelled; text ≥4.5:1; scales without clipping" },
+        { "name": "Bug triage + fixes", "est": 8, "owner": "Both", "story": "US-INFRA-4", "ac": "All P0/P1 bugs resolved; crash-free >99.5% in testing" },
+        { "name": "Performance profiling", "est": 3, "owner": "Data", "story": "US-INFRA-4", "ac": "Dashboard loads <2s; lists scroll at 60fps on iPhone 11" },
+        { "name": "Dark mode polish + reduced-motion", "est": 2, "owner": "iOS", "story": "US-014", "ac": "All screens reviewed in dark mode; animations reduced when system set" }
+      ] },
+    { "id": 6, "name": "Launch Prep", "weeks": [11, 12], "points": 12, "status": "planned", "risk": "low",
+      "deliverable": "Submitted to App Store",
+      "goal": "Everything non-code needed to ship: store assets, legal, and the final build.",
+      "depends": [5], "unblocks": [7],
+      "tasks": [
+        { "name": "App Store screenshots", "est": 3, "owner": "iOS", "story": "US-INFRA-5", "ac": "Screenshots for 6.7\"/6.1\"/5.5\" showing key screens" },
+        { "name": "Privacy policy + nutrition label", "est": 2, "owner": "Both", "story": "US-INFRA-5", "ac": "Policy hosted; App Privacy questions answered accurately" },
+        { "name": "App Store listing copy + keywords", "est": 2, "owner": "Both", "story": "US-INFRA-5", "ac": "Listing finalised; keywords researched" },
+        { "name": "Final TestFlight build + testers", "est": 5, "owner": "Both", "story": "US-INFRA-5", "ac": "Build uploaded; ≥10 external testers invited" }
+      ] },
+    { "id": 7, "name": "Review & v1.1 Start", "weeks": [13, 14], "points": 19, "status": "planned", "risk": "med",
+      "deliverable": "App live, v1.1 underway",
+      "goal": "Get through App Review and start the reports/AI-learning work in parallel.",
+      "depends": [6], "unblocks": [8],
+      "tasks": [
+        { "name": "App Store review iteration", "est": 3, "owner": "Both", "story": "US-015", "ac": "Respond to review feedback; app approved and live" },
+        { "name": "Reports module", "est": 13, "owner": "Both", "story": "US-015", "ac": "Spending grouped by category with %, count, trend; PDF export (free), CSV (paid)" },
+        { "name": "AI learning prep (schema)", "est": 3, "owner": "Data", "story": "US-016", "ac": "Schema to capture user category corrections" }
+      ] },
+    { "id": 8, "name": "v1.1 Features", "weeks": [15, 16], "points": 25, "status": "planned", "risk": "high",
+      "deliverable": "v1.1 feature complete",
+      "goal": "The learning categorisation and insights that competitors haven't nailed. Tight — widgets may slip to v1.2.",
+      "depends": [7], "unblocks": [],
+      "tasks": [
+        { "name": "AI auto-categorisation (learning)", "est": 13, "owner": "Both", "story": "US-016", "ac": "Learned mappings prioritised over defaults; never overwrites a manual entry" },
+        { "name": "Advanced insights (paid)", "est": 8, "owner": "Both", "story": "US-018", "ac": "Generates 3–5 honest insights from spending; gated to paid" },
+        { "name": "Balance widget", "est": 4, "owner": "iOS", "story": "US-017", "ac": "Home-screen widget shows effective balance; updates daily" }
+      ] }
+  ],
+  "milestones": [
+    { "week": 2, "label": "Design + CoreData locked" },
+    { "week": 4, "label": "Add accounts, see balance" },
+    { "week": 6, "label": "Add transactions" },
+    { "week": 8, "label": "Forecast + paywall working" },
+    { "week": 10, "label": "App Store ready" },
+    { "week": 12, "label": "Submitted", "major": true },
+    { "week": 14, "label": "LIVE", "major": true }
+  ],
+  "risks": [
+    { "name": "StoreKit integration", "severity": "high", "prob": 0.25, "delayWeeks": 1, "sprint": 4,
+      "impact": "Subscription certification complexity", "mitigation": "Research wk5, prototype wk6, +1wk buffer" },
+    { "name": "CoreData migrations", "severity": "med", "prob": 0.20, "delayWeeks": 0.5, "sprint": 2,
+      "impact": "Data loss on upgrade", "mitigation": "Test harness in Sprint 1, rigorous testing" },
+    { "name": "Accessibility WCAG AA", "severity": "med", "prob": 0.20, "delayWeeks": 1, "sprint": 5,
+      "impact": "Late discovery of violations", "mitigation": "Build in throughout, not just wk9" },
+    { "name": "Performance on old devices", "severity": "low", "prob": 0.15, "delayWeeks": 0.5, "sprint": 5,
+      "impact": "Slow on iPhone 11 and older", "mitigation": "Profile early, test on device" }
+  ],
+  "simulation": {
+    "totalPoints": 124, "velocityMean": 22, "velocityStd": 4.5, "sprintWeeks": 2, "runs": 8000,
+    "note": "Monte Carlo over sprint velocity + risk-driven delays. Targets weeks-to-submission (Sprints 1–6)."
+  },
+  "pricing": {
+    "model": "Freemium · single paid tier", "monthly": "£3.99", "annual": "£29.99", "annualSaving": "37%",
+    "free": ["Unlimited accounts", "Unlimited transactions", "100 categories", "Effective balance", "4-week forecast", "Basic reports", "Dark mode"],
+    "paid": ["8-week forecast", "AI learning categorisation", "Custom report builder + CSV", "Report scheduling", "Widgets", "Advanced insights"]
+  },
+  "devlog": [
+    { "date": "2026-06-08", "title": "Living atlas — drill-down added", "tags": ["docs"],
+      "body": "Upgraded the living doc to a navigable atlas: every sprint and module is now clickable through to its own detail view, with tasks, acceptance criteria, dependencies and the architecture teardown." },
+    { "date": "2026-06-08", "title": "Planning track complete", "tags": ["planning"],
+      "body": "All phases done: design system, engineering estimation, sprint plan, 6 architecture gaps resolved, story breakdown (20 stories → 60+ tickets), pricing locked, beta plan. Sprint 1 unblocked." },
+    { "date": "2026-06-08", "title": "Pricing finalised", "tags": ["pricing"],
+      "body": "Single tier £3.99/mo or £29.99/yr (37% saving). Undercuts Emma Plus (£4.99) and Snoop (£5.99). 'No bank login, ever' as a privacy differentiator vs YNAB." }
+  ]
+}
