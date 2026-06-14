@@ -2,9 +2,27 @@
 
 > JSON-driven living-doc generator. One JSON file → one self-contained
 > interactive HTML "atlas". Hash-routed drill-down, Monte Carlo schedule
-> simulation, risk register, devlog. Reusable across project plans,
+> simulation, risk register, **security model** (threats + mitigations +
+> principles + compliance), devlog. Reusable across project plans,
 > constitutions, runbooks, and knowledge bases. No build step, no
 > dependencies.
+
+## What's new in v1.1.0
+
+- **Security view** (`#/security`) with a Threat-rooted (default) and
+  Mitigation-rooted toggle. Threats are grouped by severity; mitigations
+  are grouped by status (planned → in-progress → verified → dropped).
+- **Per-module security posture** rendered on each module page (data
+  classes, at-rest class, threats exposed to, mitigations implemented).
+- **Per-task 🔒 chips** on sprint pages where a task implements a
+  named mitigation.
+- **Security tile** on the overview between architecture and risks
+  (threat / mitigation / principle / compliance counts).
+- **Risk tagging** — `kind: "security"` renders shield glyph + accent
+  border on risks; `devlog[].tags` including `"security"` does the same
+  for log entries.
+- All additions are backward-compatible: a `project.json` with no
+  `security` block renders identically to v1.0.0.
 
 ## Install
 
@@ -57,7 +75,7 @@ bb-atlas my-plan/project.json my-plan/index.html
 
 See `SKILL.md` for the full schema. Only `project.name` is strictly
 required. Every other section (`metrics`, `roadmap`, `sprints`,
-`architecture`, `simulation`, `pricing`, `risks`, `devlog`,
+`architecture`, `simulation`, `pricing`, `risks`, `security`, `devlog`,
 `milestones`) is optional — omit a key to drop that section.
 
 See `project.template.json` for a worked example (bb finance iOS plan,
