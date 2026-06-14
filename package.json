@@ -1,7 +1,7 @@
 {
   "name": "byte-bridges-atlas",
-  "version": "1.0.0",
-  "description": "JSON-driven living-doc generator. One JSON file → one self-contained interactive HTML atlas (hash-routed drill-down, Monte Carlo schedule simulation, risk register, devlog). Reusable across project plans, constitutions, runbooks, and knowledge bases.",
+  "version": "1.1.0",
+  "description": "JSON-driven living-doc generator. One JSON file → one self-contained interactive HTML atlas (hash-routed drill-down, Monte Carlo schedule simulation, risk register, security model, devlog). Reusable across project plans, constitutions, runbooks, and knowledge bases.",
   "bin": {
     "bb-atlas": "bin/bb-atlas"
   },

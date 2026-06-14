@@ -74,7 +74,9 @@ Chronological, append-only. Two entry types share the same header:
 
 Append entries via `/roadmap_decide` and `/roadmap_divert`.
 
-_(no decisions yet)_
+### 2026-06-13 — decision(Adopt security-by-design as a first-class schema citizen in bb-atlas (v1.1.0)): decision about Adopt security-by-design as a first-class schema citizen in bb-atlas (v1.1.0)
+
+Security context (threats, mitigations, principles, compliance) was previously only expressible as plain risks or devlog entries, with no normative place in the schema. Surfaced as a gap when applying bb-atlas to bb-finance (an offline-first finance app) — security-by-design is the methodology; the tool needs to display it natively. Adding a top-level `security` block + per-module + per-task tags + a new `#/security` view (threat-rooted with mitigation-rooted toggle), all additive and backward-compatible. Rejected: a sidecar security.md doc (loses cross-linking with sprints/modules); piggybacking on risks[] (conflates schedule risk with threat model).
 
 ---
 
