@@ -1,6 +1,6 @@
 ---
 name: bb-atlas
-description: Generate an interactive HTML "living atlas" from a single JSON file. Drill-down dashboard with roadmap, optional sprint timeline + task-level acceptance criteria, architecture teardown (modules + data model), Monte Carlo schedule simulation, risk register, security model (threats + mitigations + principles + compliance), pricing, and devlog. Everything is clickable; views cross-link via a hash router; single self-contained file (no build step, no deps). Use when CJ asks for a "living document", "living atlas", "navigable dashboard", "visualise and simulate the plan", or wants a project plan / constitution / runbook / knowledge base turned into a single interactive doc.
+description: Generate an interactive HTML "living atlas" from a single JSON file. Drill-down dashboard with roadmap, optional sprint timeline + task-level acceptance criteria, architecture teardown (modules + data model), Monte Carlo schedule simulation, risk register, security model (threats + mitigations + principles + compliance), SEO posture (findings + audits + checks), pricing, and devlog. Everything is clickable; views cross-link via a hash router; single self-contained file (no build step, no deps). Use when CJ asks for a "living document", "living atlas", "navigable dashboard", "visualise and simulate the plan", or wants a project plan / constitution / runbook / knowledge base turned into a single interactive doc.
 ---
 
 # BB Atlas — global living-doc generator
@@ -86,8 +86,9 @@ node ~/Development/byte-bridges-atlas/bin/bb-atlas <input> <output>
 | `risksLabel` | optional | Section heading override (e.g. `"GOTCHAS"` for constitutional use) |
 | `simulation` | optional | `{totalPoints, velocityMean, velocityStd, sprintWeeks, runs, note}` — Monte Carlo widget. Auto-disabled if no `sprints` |
 | **`security`** | optional | Top-level security model — threats, mitigations, principles, compliance. See [Security schema](#security-schema-v110). Renders the `#/security` view and the overview tile. |
+| **`seo`** | optional | Top-level SEO posture — findings, audits, principles, status-code health, checks. See [SEO schema](#seo-schema-v120). Renders the `#/seo` view and the overview tile. |
 | `pricing` | optional | `{model, monthly, annual, annualSaving, free[], paid[]}` |
-| `devlog[]` | optional | `{date, title, tags[], body}` — reverse-chronological. A `tags` entry of `"security"` renders the row with a shield glyph. |
+| `devlog[]` | optional | `{date, title, tags[], body}` — reverse-chronological. A `tags` entry of `"security"` renders the row with a shield glyph; `"seo"` renders with a magnifying-glass glyph. |
 | `devlogLabel` | optional | Section heading override (e.g. `"Change Log"`, `"Constitutional History"`) |
 
 ### What gets skipped if you omit a key
@@ -100,6 +101,7 @@ node ~/Development/byte-bridges-atlas/bin/bb-atlas <input> <output>
 - No `metrics` → no Snapshot tiles
 - No `simulation` (or no `sprints`) → no Monte Carlo widget
 - No `security` → no `#/security` view in the top nav, no security tile on overview, no 🔒 chips on tasks, no shield glyphs on risks/devlog (per-module / per-task `security` keys also become no-ops)
+- No `seo` → no `#/seo` view in the top nav, no SEO tile on overview, no 🔎 chips on tasks, no magnifying-glass glyph on devlog (per-module / per-task `seo` keys also become no-ops)
 
 ## Security schema (v1.1.0+)
 
@@ -217,6 +219,138 @@ Cross-ref warnings (don't block generation):
 All values fall through `esc()` (HTML-escaped) — content is safe to paste
 markdown-style text into.
 
+## SEO schema (v1.2.0+)
+
+The `seo` block is bb-atlas's first-class home for SEO posture —
+findings from an audit, the audit history itself, principles, and
+site-wide checks. Mirrors the security-by-design pattern. Backward-
+compat: a project with no `seo` block renders exactly as it did in
+v1.1.0.
+
+The shape was designed to consume site-wide technical-SEO audit
+reports produced by the `site-audit-on-page-seo` skill (section B).
+A typical workflow:
+
+1. Run the audit; it writes `audits/seo-tech-YYYY-MM-DD/seo-site.md`.
+2. Transcribe the findings into `seo.findings[]`.
+3. Re-generate the atlas — the `#/seo` view now reflects current state.
+4. As findings move from `open` → `in-progress` → `fixed`, update
+   `status` in place. The overview tile re-counts automatically.
+
+### Top-level shape
+
+```jsonc
+"seo": {
+  "summary": "Short narrative — what surface this covers and the audit cadence.",
+  "publicUrl": "https://atlas.bytebridges.dev",
+
+  "principles": [
+    { "id": "SEO-001", "name": "Every public page declares an absolute canonical",
+      "scope": "all routes", "verified": false }
+  ],
+
+  "checks": [
+    { "name": "sitemap.xml",  "status": "missing", "note": "404 at /sitemap.xml" },
+    { "name": "robots.txt",   "status": "missing", "note": "404 at /robots.txt" },
+    { "name": "canonical",    "status": "partial", "note": "no <link rel=canonical> on /" },
+    { "name": "viewport meta","status": "present", "note": "width=device-width, initial-scale=1" }
+  ],
+
+  "statusHealth": { "2xx": 1, "3xx": 1, "4xx": 2, "5xx": 0, "0": 0 },
+
+  "findings": [
+    { "id": "F-001",
+      "severity": "P1",                            // P1 | P2 | P3
+      "area": "404",                               // sitemap | robots | canonical | redirects | status | 404 | meta | schema | content | other
+      "name": "Catch-all routing returns 200 for unknown paths",
+      "summary": "Every /<anything> resolves to the SPA shell with a 200.",
+      "fix": "Hosting-platform 404 for unmapped paths, or noindex meta on routes outside inventory.json.",
+      "status": "open",                            // open | in-progress | fixed | wontfix
+      "module": "lib-generate",                    // optional cross-ref
+      "sprint": 1,                                 // optional cross-ref
+      "evidence": "curl -I /this-does-not-exist → HTTP/1.1 200",
+      "audit": "seo-tech-2026-06-14" }
+  ],
+
+  "audits": [
+    { "date": "2026-06-14",
+      "target": "atlas.bytebridges.dev",
+      "scope": "site-wide technical SEO",
+      "source": "audits/seo-tech-2026-06-14/seo-site.md",
+      "summary": "1 P1 (latent), 5 P2, 5 P3 — sitemap/robots/canonical missing" }
+  ]
+}
+```
+
+### Per-module SEO posture
+
+Inside any `architecture.modules[]` entry:
+
+```jsonc
+"seo": {
+  "routes": ["/"],
+  "indexable": true,
+  "canonical": "https://atlas.bytebridges.dev/",
+  "schemaTypes": ["Organization", "WebSite"],
+  "findings": ["F-001", "F-002"]
+}
+```
+
+Rendered as an "SEO posture" subsection on the module page.
+
+### Per-task SEO tag
+
+Inside any `sprints[].tasks[]` entry:
+
+```jsonc
+"seo": {
+  "finding": "F-001",
+  "ac": "Hosting platform returns 404 (not 200) for any unmapped path; integration test asserts status code."
+}
+```
+
+Renders a 🔎 chip beside the task with the finding ID and AC in a
+tooltip. Links through to `#/seo` to the matching finding.
+
+### Devlog tagging
+
+- `devlog[].tags` array including `"seo"` — magnifying-glass glyph
+  beside the entry title, amber-tinted tag chip.
+
+### The `#/seo` view
+
+Two layouts on the same page, with a toggle:
+
+- **By severity (default)** — findings grouped P1 → P2 → P3, each
+  with its area pill, status pill, evidence, and a cross-link to the
+  implementing module/sprint and source audit. Reads as "what's
+  broken in priority order".
+- **By area** — findings grouped by area (sitemap, robots, canonical,
+  ...), then sorted by severity within each group. Reads as "which
+  surface is leaking the most".
+
+Plus a Principles strip (read-only `SEO-NNN` invariants), a Status-
+code health grid, a per-check matrix (sitemap / robots / canonical /
+viewport / ...), and an Audit history list at the bottom of the view.
+
+### Validation rules
+
+Permissive (warnings, not errors) for unknown fields and missing
+optional keys. Hard errors:
+
+- `seo` must be an object if present.
+- `seo.findings[].id` is required when `findings` is present.
+- `severity ∈ {P1, P2, P3}` if present.
+- `status ∈ {open, in-progress, fixed, wontfix}` if present.
+
+Soft warnings:
+
+- `area` outside the standard set — renders, but does not group with
+  siblings under "By area".
+- `findings[].module` that doesn't match any `architecture.modules[].id`.
+- `findings[].sprint` that doesn't match any `sprints[].id`.
+- `task.seo.finding` IDs that don't resolve.
+
 ## Common use shapes
 
 ### Project plan (the original use case)
@@ -269,6 +403,7 @@ The hash router is hard-coded (schema-driven where dynamic):
 - `#/arch` — architecture teardown (if `architecture` present)
 - `#/module/<id>` — per-module page (if `architecture.modules` present)
 - `#/security` — security view: threat-rooted (default) and mitigation-rooted toggle (if `security` present)
+- `#/seo` — SEO view: by-severity (default) and by-area toggle (if `seo` present)
 
 Works on `file://` (no server needed). Browser back/forward and
 bookmarks all behave correctly.
