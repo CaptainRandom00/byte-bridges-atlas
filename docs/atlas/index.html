@@ -155,6 +155,141 @@ section{padding:40px 0;border-bottom:1px solid var(--border);position:relative;z
 .dm-rel{font-size:12px;color:var(--teal);font-family:var(--mono)}
 footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.8}
 footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:var(--cyan)}
+/* ====== security view (v1.1.0) ====== */
+.sec-shield{display:inline-block;filter:drop-shadow(0 0 6px rgba(0,217,255,.4))}
+.sec-tile{display:block;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;text-decoration:none;color:inherit;transition:.25s;position:relative;overflow:hidden}
+.sec-tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--cyan),var(--teal))}
+.sec-tile:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.sec-tile-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--display);font-weight:600;font-size:17px}
+.sec-tile-title{flex:1}
+.sec-tile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.sec-tile-stat{padding:10px 4px}
+.sec-tile-stat .stat-val{font-family:var(--display);font-weight:700;font-size:26px;color:var(--cyan);line-height:1}
+.sec-tile-stat .stat-label{font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono)}
+.sec-tile-stat .stat-sub{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.sec-principles{display:flex;flex-direction:column;gap:7px;margin-bottom:8px}
+.sec-principle{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13.5px}
+.sec-principle.verified{border-color:rgba(6,214,160,.35)}
+.sec-pid{font-family:var(--mono);font-size:10.5px;color:var(--cyan);background:var(--surface2);padding:3px 8px;border-radius:4px;letter-spacing:.5px}
+.sec-pname{font-weight:600;flex:1}
+.sec-pscope{font-family:var(--mono);font-size:10.5px;color:var(--amber);text-transform:uppercase;letter-spacing:1px}
+.sec-pverify{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.sec-principle.verified .sec-pverify{color:var(--teal)}
+.sec-toggle{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:4px;gap:2px;margin:26px 0 14px}
+.sec-tab{font-family:var(--mono);font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;background:transparent;color:var(--muted);border:none;border-radius:6px;padding:9px 16px;cursor:pointer;transition:.2s}
+.sec-tab:hover{color:var(--text)}
+.sec-tab.active{background:var(--surface2);color:var(--cyan)}
+.sec-pane{display:none;flex-direction:column;gap:14px}
+.sec-pane.active{display:flex}
+.sec-threat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative}
+.sec-threat-card::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--muted)}
+.sec-threat-card:has(.sev-high)::before{background:var(--red)}
+.sec-threat-card:has(.sev-med)::before{background:var(--amber)}
+.sec-threat-card:has(.sev-low)::before{background:var(--teal)}
+.sec-threat-top{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:8px}
+.sec-sev{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:4px;letter-spacing:1.2px}
+.sec-tid{font-family:var(--mono);font-size:11px;color:var(--cyan);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;letter-spacing:.5px}
+.sec-tname{font-weight:600;font-size:15px;flex:1;min-width:200px}
+.sec-tlike{font-family:var(--mono);font-size:11px;color:var(--amber)}
+.sec-timpact{font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.55}
+.sec-applies{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.sec-applies-label,.sec-mits-label,.sec-mit-covers-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-right:6px}
+.sec-mits-wrap{margin-top:8px;padding-top:12px;border-top:1px dashed var(--border)}
+.sec-mits-label{display:block;margin-bottom:8px}
+.sec-mits{display:flex;flex-direction:column;gap:8px}
+.sec-mit-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 13px}
+.sec-mit-row.missing{border-color:var(--red);color:var(--red)}
+.sec-mit-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sec-mit-id{font-family:var(--mono);font-size:10.5px;color:var(--teal);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;letter-spacing:.5px}
+.sec-mit-name{font-weight:500;font-size:13px;flex:1;min-width:180px}
+.sec-status-pill{font-family:var(--mono);font-size:9.5px;border:1px solid;border-radius:4px;padding:3px 8px;letter-spacing:1.2px;text-transform:uppercase}
+.sec-mit-loc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:5px}
+.sec-mit-evidence{font-size:12px;color:var(--teal);margin-top:5px;font-family:var(--mono)}
+.sec-mit-covers{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:12px;color:var(--muted)}
+.sec-task-ref{font-family:var(--mono);color:var(--amber)}
+.sec-status-group{margin-bottom:6px}
+.sec-status-head{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.sec-mit-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.sec-compliance{display:flex;flex-direction:column;gap:8px}
+.sec-comp-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;flex-wrap:wrap}
+.sec-comp-name{flex:1;font-weight:500;min-width:180px}
+.sec-comp-verif{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.sec-threat-chip,.sec-mit-chip{font-family:var(--mono);font-size:11px;text-decoration:none}
+.sec-sev-dot,.sec-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+/* per-module security posture */
+.sec-mod-grid{display:flex;flex-direction:column;gap:8px}
+.sec-mod-row{display:grid;grid-template-columns:140px 1fr;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;align-items:center}
+@media(max-width:680px){.sec-mod-row{grid-template-columns:1fr}}
+.sec-mod-key{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.sec-mod-val{font-size:13px}
+.sec-mod-val code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--teal);font-size:11.5px}
+/* per-task 🔒 chip */
+.task-sec{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10.5px;color:var(--cyan);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;text-decoration:none;transition:.2s}
+.task-sec:hover{border-color:var(--cyan);background:rgba(0,217,255,.08)}
+.task-with-sec{border-left:2px solid var(--cyan)}
+.task-ac-sec{color:var(--cyan)!important;font-style:italic;border-top:1px dashed var(--border);padding-top:6px!important;margin-top:6px}
+/* risk shield (kind:security) */
+.risk-security{border-color:rgba(0,217,255,.35);box-shadow:0 0 18px rgba(0,217,255,.06)}
+.risk-shield{margin-right:4px}
+/* devlog shield + sec tag */
+.log-security .log-title{color:var(--cyan)}
+.log-shield{margin-right:4px}
+.log-tag-sec{background:rgba(0,217,255,.12)!important;color:var(--cyan)!important;border-color:rgba(0,217,255,.35)!important}
+/* ====== seo view (v1.2.0) ====== */
+.seo-mag{display:inline-block;filter:drop-shadow(0 0 6px rgba(255,165,0,.45))}
+.seo-tile{display:block;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;text-decoration:none;color:inherit;transition:.25s;position:relative;overflow:hidden}
+.seo-tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--amber),var(--teal))}
+.seo-tile:hover{border-color:var(--amber);transform:translateY(-2px)}
+.seo-tile-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--display);font-weight:600;font-size:17px}
+.seo-tile-title{flex:1}
+.seo-tile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.seo-tile-stat{padding:10px 4px}
+.seo-tile-stat .stat-val{font-family:var(--display);font-weight:700;font-size:26px;color:var(--amber);line-height:1}
+.seo-tile-stat .stat-label{font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono)}
+.seo-tile-stat .stat-sub{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.seo-health{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:8px}
+.seo-health-cell{background:var(--surface);border:1px solid;border-radius:10px;padding:14px 12px;text-align:center}
+.seo-health-val{font-family:var(--display);font-weight:700;font-size:24px;line-height:1}
+.seo-health-label{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:1.5px;text-transform:uppercase}
+.seo-checks{display:flex;flex-direction:column;gap:7px;margin-bottom:8px}
+.seo-check-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;flex-wrap:wrap}
+.seo-check-dot{width:9px;height:9px;border-radius:50%}
+.seo-check-name{font-weight:600;font-size:13.5px}
+.seo-check-note{font-family:var(--mono);font-size:11.5px;color:var(--muted);flex:1;min-width:160px}
+.seo-toggle{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:4px;gap:2px;margin:26px 0 14px}
+.seo-tab{font-family:var(--mono);font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;background:transparent;color:var(--muted);border:none;border-radius:6px;padding:9px 16px;cursor:pointer;transition:.2s}
+.seo-tab:hover{color:var(--text)}
+.seo-tab.active{background:var(--surface2);color:var(--amber)}
+.seo-pane{display:none;flex-direction:column;gap:14px}
+.seo-pane.active{display:flex}
+.seo-finding-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;margin-bottom:8px}
+.seo-finding-card::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--muted)}
+.seo-finding-card:has(.sev-P1)::before{background:var(--red)}
+.seo-finding-card:has(.sev-P2)::before{background:var(--amber)}
+.seo-finding-card:has(.sev-P3)::before{background:var(--teal)}
+.seo-finding-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.seo-area-pill{font-family:var(--mono);font-size:10.5px;color:var(--cyan);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 8px;letter-spacing:.5px}
+.seo-fix{font-size:13px;color:var(--text);margin-top:6px;line-height:1.55}
+.seo-fix-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--amber);margin-right:6px}
+.seo-finding-chip{font-family:var(--mono);font-size:11px;text-decoration:none}
+.seo-sev-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.seo-audits{display:flex;flex-direction:column;gap:8px}
+.seo-audit-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px}
+.seo-audit-date{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-right:10px;letter-spacing:.5px}
+.seo-audit-target{font-weight:600}
+.seo-audit-scope{font-family:var(--mono);font-size:10.5px;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-left:10px}
+.seo-audit-summary{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.seo-audit-source{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:5px}
+.seo-audit-source code,.seo-audit-ref{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--amber);font-size:11.5px}
+/* per-task 🔎 chip */
+.task-seo{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10.5px;color:var(--amber);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;text-decoration:none;transition:.2s}
+.task-seo:hover{border-color:var(--amber);background:rgba(255,165,0,.08)}
+.task-with-seo{border-left:2px solid var(--amber)}
+.task-ac-seo{color:var(--amber)!important;font-style:italic;border-top:1px dashed var(--border);padding-top:6px!important;margin-top:6px}
+/* devlog seo tag */
+.log-seo .log-title{color:var(--amber)}
+.log-mag{margin-right:4px}
+.log-tag-seo{background:rgba(255,165,0,.12)!important;color:var(--amber)!important;border-color:rgba(255,165,0,.35)!important}
 </style></head>
 <body>
 <div class="grain"></div>
@@ -162,6 +297,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
   <a class="brand" href="#/">BB<b>Atlas</b> · atlas</a>
   <a class="nav" href="#/" data-nav="/">Overview</a>
   <a class="nav" href="#/arch" data-nav="/arch">Internals</a>
+  
+  <a class="nav" href="#/seo" data-nav="/seo">🔎 SEO</a>
   <span class="spacer"></span>
   <span class="nav" style="color:var(--muted)">2026-06-09</span>
 </div></div>
@@ -241,6 +378,20 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
           <div class="rm-detail">Auto-generate the schema reference in SKILL.md from a single source-of-truth schema file (JSON Schema or TypeScript types).</div></div></div>
         </div></section>
 <section><div class="arch-cta"><a class="big-link" href="#/arch">⊞ Open the Architecture Teardown →</a></div></section>
+<section><div class="sec-head">SEO posture · click to open findings + audits</div>
+        <a class="seo-tile linked" href="#/seo">
+          <div class="seo-tile-head">
+            <span class="seo-mag">🔎</span>
+            <span class="seo-tile-title">SEO findings + audits</span>
+            <span class="go">→</span>
+          </div>
+          <div class="seo-tile-grid">
+            <div class="seo-tile-stat"><div class="stat-val">1</div><div class="stat-label">P1</div><div class="stat-sub">0 fixed · 0 in progress · 11 open</div></div>
+            <div class="seo-tile-stat"><div class="stat-val">5</div><div class="stat-label">P2</div><div class="stat-sub">important — should land</div></div>
+            <div class="seo-tile-stat"><div class="stat-val">5</div><div class="stat-label">P3</div><div class="stat-sub">nice-to-have</div></div>
+            <div class="seo-tile-stat"><div class="stat-val">3</div><div class="stat-label">Principles</div><div class="stat-sub">1 2xx · 1 3xx · 2 4xx</div></div>
+          </div>
+        </a></section>
 <section><div class="sec-head">Known caveats</div><div class="risk-row">
           <div class="risk-sev" style="background:var(--teal)"></div>
           <div class="risk-body">
@@ -370,6 +521,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/cmd-init">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas init</b></nav>
@@ -384,6 +537,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-init">lib/init.js</a><a class="dep-chip in" href="#/module/tmpl-starter">starter.project.json</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/cmd-serve">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas serve</b></nav>
@@ -398,6 +553,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-serve">lib/serve.js</a><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/cmd-validate">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>bb-atlas validate</b></nav>
@@ -412,6 +569,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-validate">lib/validate.js</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/lib-generate">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/generate.js</b></nav>
@@ -426,6 +585,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/lib-init">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/init.js</b></nav>
@@ -440,6 +601,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a><a class="dep-chip in" href="#/module/tmpl-starter">starter.project.json</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/lib-serve">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/serve.js</b></nav>
@@ -454,6 +617,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><a class="dep-chip in" href="#/module/lib-generate">lib/generate.js</a></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/lib-validate">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>lib/validate.js</b></nav>
@@ -468,6 +633,8 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
       
     </div>
+    
+    
     </div>
 <div class="view" data-route="/module/tmpl-starter">
     <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <a href="#/arch">BB ATLAS · INTERNALS</a> <span>/</span> <b>starter.project.json</b></nav>
@@ -482,8 +649,402 @@ footer code{background:var(--surface2);padding:2px 7px;border-radius:4px;color:v
       <div class="dep-box"><div class="dep-label">Depends on</div><span class="dep-none">no internal dependencies</span></div>
       
     </div>
+    
+    
     </div>
-<footer>Living atlas for <b>BB Atlas</b> · edit <code>project.json</code> &rarr; <code>bb-atlas generate</code> &rarr; refresh<br>Generated 2026-06-09 10:21 · 9 modules<br>Built with <b style="color:var(--cyan)">Byte Bridges Atlas</b> · reusable living-doc generator</footer>
+<div class="view" data-route="/seo">
+    <nav class="crumbs"><a href="#/">Overview</a> <span>/</span> <b>SEO</b></nav>
+    <div class="detail-head">
+      <div class="dh-id">🔎 SEO POSTURE</div>
+      <h1>SEO findings &amp; audits</h1>
+      <p class="dh-goal">Self-audit of a hypothetical atlas.bytebridges.dev deployment of the bb-atlas docs. Findings transcribed from audits/seo-tech-2026-06-14/seo-site.md — the v1.2.0 schema's reference SEO audit.</p>
+      <div class="dh-deliverable">▸ Public URL: <code>https://atlas.bytebridges.dev</code></div>
+    </div>
+    
+    <div class="sec-head">Principles · invariants every public surface must honour</div>
+    <div class="sec-principles">
+      
+        <div class="sec-principle">
+          <span class="sec-pid">SEO-001</span>
+          <span class="sec-pname">Every public page declares an absolute canonical</span>
+          <span class="sec-pscope">all routes</span>
+          <span class="sec-pverify">…</span>
+        </div>
+        <div class="sec-principle">
+          <span class="sec-pid">SEO-002</span>
+          <span class="sec-pname">robots.txt + sitemap.xml are present on every deployed host</span>
+          <span class="sec-pscope">infrastructure</span>
+          <span class="sec-pverify">…</span>
+        </div>
+        <div class="sec-principle">
+          <span class="sec-pid">SEO-003</span>
+          <span class="sec-pname">Preview / staging hosts emit noindex</span>
+          <span class="sec-pscope">non-production</span>
+          <span class="sec-pverify">…</span>
+        </div>
+    </div>
+    
+    <div class="sec-head">Status-code health</div>
+    <div class="seo-health">
+      <div class="seo-health-cell" style="border-color:var(--teal)"><div class="seo-health-val" style="color:var(--teal)">1</div><div class="seo-health-label">2xx</div></div><div class="seo-health-cell" style="border-color:var(--cyan)"><div class="seo-health-val" style="color:var(--cyan)">1</div><div class="seo-health-label">3xx</div></div><div class="seo-health-cell" style="border-color:var(--amber)"><div class="seo-health-val" style="color:var(--amber)">2</div><div class="seo-health-label">4xx</div></div><div class="seo-health-cell" style="border-color:var(--red)"><div class="seo-health-val" style="color:var(--red)">0</div><div class="seo-health-label">5xx</div></div><div class="seo-health-cell" style="border-color:var(--muted)"><div class="seo-health-val" style="color:var(--muted)">0</div><div class="seo-health-label">0</div></div>
+    </div>
+    
+    <div class="sec-head">Site-wide checks</div>
+    <div class="seo-checks">
+      <div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--red)"></span>
+          <span class="seo-check-name">sitemap.xml</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">MISSING</span>
+          <span class="seo-check-note">404 at /sitemap.xml — generator could emit one with --public-url</span>
+        </div><div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--red)"></span>
+          <span class="seo-check-name">robots.txt</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">MISSING</span>
+          <span class="seo-check-note">404 at /robots.txt — no Sitemap: reference, no Disallow scope</span>
+        </div><div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--red)"></span>
+          <span class="seo-check-name">canonical</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">MISSING</span>
+          <span class="seo-check-note">no &lt;link rel=canonical&gt; on the generated HTML</span>
+        </div><div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--teal)"></span>
+          <span class="seo-check-name">viewport meta</span>
+          <span class="sec-status-pill" style="color:var(--teal);border-color:var(--teal)">PRESENT</span>
+          <span class="seo-check-note">width=device-width, initial-scale=1 — accessibility-friendly, no maximum-scale</span>
+        </div><div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--teal)"></span>
+          <span class="seo-check-name">HTTPS</span>
+          <span class="sec-status-pill" style="color:var(--teal);border-color:var(--teal)">PRESENT</span>
+          <span class="seo-check-note">HTTP → HTTPS 308 enforced at the edge</span>
+        </div><div class="seo-check-row">
+          <span class="seo-check-dot" style="background:var(--red)"></span>
+          <span class="seo-check-name">404 page</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">MISSING</span>
+          <span class="seo-check-note">catch-all returns 200 (SPA shell) for /this-does-not-exist</span>
+        </div>
+    </div>
+    <div class="seo-toggle">
+      <button class="seo-tab active" data-tab="sev" type="button">By severity</button>
+      <button class="seo-tab" data-tab="area" type="button">By area</button>
+    </div>
+    <div class="seo-pane seo-pane-sev active">
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--red)">P1 · 1</div>
+        <div class="seo-finding-card" id="f-F-001">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P1" style="background:var(--red);color:#0A0E27">P1</span>
+          <span class="sec-tid">F-001</span>
+          <span class="sec-tname">Catch-all routing returns 200 for unknown paths</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">404 handling</span>
+        </div>
+        <div class="sec-timpact">Every /&lt;anything&gt; resolves to the SPA shell with a 200. Latent for the current single-route deployment; blocking once v1.2.0 ships multi-page output.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Hosting-platform 404 for unmapped paths, or noindex meta on routes outside inventory.json.</div>
+        <div class="sec-mit-evidence">▸ Evidence: curl -I /this-does-not-exist → HTTP/1.1 200</div>
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--amber)">P2 · 5</div>
+        <div class="seo-finding-card" id="f-F-002">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-002</span>
+          <span class="sec-tname">Missing /robots.txt</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Robots.txt</span>
+        </div>
+        <div class="sec-timpact">No Disallow scope, no Sitemap: reference, no precedent for the next deploy.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit a default User-agent: * / Allow: / / Sitemap: &lt;publicUrl&gt;/sitemap.xml block, or document the deployment-time injection.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-003">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-003</span>
+          <span class="sec-tname">Missing /sitemap.xml</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Sitemap</span>
+        </div>
+        <div class="sec-timpact">Single indexable URL today, but file's presence is itself a quality signal.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Add `bb-atlas sitemap &lt;input.json&gt;` subcommand that writes a single-entry sitemap.xml next to the generated HTML when project.publicUrl is set.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-004">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-004</span>
+          <span class="sec-tname">No canonical tag in generated HTML</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Canonical</span>
+        </div>
+        <div class="sec-timpact">Preview-URL deployments will compete with production for the same content without an explicit canonical.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> lib/generate.js: emit &lt;link rel=canonical href=`${project.publicUrl}/`&gt; when project.publicUrl is present in the schema.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-005">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-005</span>
+          <span class="sec-tname">noindex not enforced on preview / staging deployments</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Any Vercel/Pages preview URL of the same generated HTML would be indexable too — duplicates production content under preview hosts.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit &lt;meta name=robots content=noindex&gt; when VERCEL_ENV=preview (or equivalent) at generate time.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-006">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-006</span>
+          <span class="sec-tname">OG tags incomplete</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">og:title and og:description are partially populated; og:image, og:url, og:site_name are absent. Shareability degraded.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Schema: add optional project.seo.{title,description,ogImage} overrides. Generator emits the full OG quartet, falling back to project.name + project.tagline when overrides are absent.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--teal)">P3 · 5</div>
+        <div class="seo-finding-card" id="f-F-007">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-007</span>
+          <span class="sec-tname">No twitter:card meta</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Falls back to OG when Twitter parses the page, but explicit summary_large_image renders better in-feed.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit twitter:card=summary_large_image alongside the OG quartet.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-008">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-008</span>
+          <span class="sec-tname">No JSON-LD Organization / WebSite schema</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">JSON-LD schema</span>
+        </div>
+        <div class="sec-timpact">Single-page impact is small; worth adding when a multi-page variant lands.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit Organization + WebSite JSON-LD on the homepage view when project.publicUrl is present.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-009">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-009</span>
+          <span class="sec-tname">Generic &lt;title&gt; tag</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Currently 'BB Atlas'. Could include a primary keyword phrase.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Auto-derive '&lt;project.name&gt; — &lt;project.tagline&gt;' (truncated to 60 chars) when no explicit override is set.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-010">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-010</span>
+          <span class="sec-tname">Heading hierarchy: H4 nested under H2 without H3 in 2 places</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Content depth</span>
+        </div>
+        <div class="sec-timpact">Visual-only on the rendered #/security view. Flag for tidy-up when hash-route SEO actually matters.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Promote intermediate headings in buildSecurity() to H3 to keep the ladder consistent.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-011">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-011</span>
+          <span class="sec-tname">No &lt;meta name=description&gt;</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Only the OG description is set. SERP rendering uses meta description first.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit &lt;meta name=description&gt; matching the OG description.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div></div>
+    <div class="seo-pane seo-pane-area">
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">404 handling · 1</div>
+        <div class="seo-finding-card" id="f-F-001">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P1" style="background:var(--red);color:#0A0E27">P1</span>
+          <span class="sec-tid">F-001</span>
+          <span class="sec-tname">Catch-all routing returns 200 for unknown paths</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">404 handling</span>
+        </div>
+        <div class="sec-timpact">Every /&lt;anything&gt; resolves to the SPA shell with a 200. Latent for the current single-route deployment; blocking once v1.2.0 ships multi-page output.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Hosting-platform 404 for unmapped paths, or noindex meta on routes outside inventory.json.</div>
+        <div class="sec-mit-evidence">▸ Evidence: curl -I /this-does-not-exist → HTTP/1.1 200</div>
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">Robots.txt · 1</div>
+        <div class="seo-finding-card" id="f-F-002">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-002</span>
+          <span class="sec-tname">Missing /robots.txt</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Robots.txt</span>
+        </div>
+        <div class="sec-timpact">No Disallow scope, no Sitemap: reference, no precedent for the next deploy.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit a default User-agent: * / Allow: / / Sitemap: &lt;publicUrl&gt;/sitemap.xml block, or document the deployment-time injection.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">Sitemap · 1</div>
+        <div class="seo-finding-card" id="f-F-003">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-003</span>
+          <span class="sec-tname">Missing /sitemap.xml</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Sitemap</span>
+        </div>
+        <div class="sec-timpact">Single indexable URL today, but file's presence is itself a quality signal.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Add `bb-atlas sitemap &lt;input.json&gt;` subcommand that writes a single-entry sitemap.xml next to the generated HTML when project.publicUrl is set.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">Canonical · 1</div>
+        <div class="seo-finding-card" id="f-F-004">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-004</span>
+          <span class="sec-tname">No canonical tag in generated HTML</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Canonical</span>
+        </div>
+        <div class="sec-timpact">Preview-URL deployments will compete with production for the same content without an explicit canonical.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> lib/generate.js: emit &lt;link rel=canonical href=`${project.publicUrl}/`&gt; when project.publicUrl is present in the schema.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">Meta / OG · 5</div>
+        <div class="seo-finding-card" id="f-F-005">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-005</span>
+          <span class="sec-tname">noindex not enforced on preview / staging deployments</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Any Vercel/Pages preview URL of the same generated HTML would be indexable too — duplicates production content under preview hosts.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit &lt;meta name=robots content=noindex&gt; when VERCEL_ENV=preview (or equivalent) at generate time.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-006">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P2" style="background:var(--amber);color:#0A0E27">P2</span>
+          <span class="sec-tid">F-006</span>
+          <span class="sec-tname">OG tags incomplete</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">og:title and og:description are partially populated; og:image, og:url, og:site_name are absent. Shareability degraded.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Schema: add optional project.seo.{title,description,ogImage} overrides. Generator emits the full OG quartet, falling back to project.name + project.tagline when overrides are absent.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-007">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-007</span>
+          <span class="sec-tname">No twitter:card meta</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Falls back to OG when Twitter parses the page, but explicit summary_large_image renders better in-feed.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit twitter:card=summary_large_image alongside the OG quartet.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-009">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-009</span>
+          <span class="sec-tname">Generic &lt;title&gt; tag</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Currently 'BB Atlas'. Could include a primary keyword phrase.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Auto-derive '&lt;project.name&gt; — &lt;project.tagline&gt;' (truncated to 60 chars) when no explicit override is set.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div><div class="seo-finding-card" id="f-F-011">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-011</span>
+          <span class="sec-tname">No &lt;meta name=description&gt;</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Meta / OG</span>
+        </div>
+        <div class="sec-timpact">Only the OG description is set. SERP rendering uses meta description first.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit &lt;meta name=description&gt; matching the OG description.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">JSON-LD schema · 1</div>
+        <div class="seo-finding-card" id="f-F-008">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-008</span>
+          <span class="sec-tname">No JSON-LD Organization / WebSite schema</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">JSON-LD schema</span>
+        </div>
+        <div class="sec-timpact">Single-page impact is small; worth adding when a multi-page variant lands.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Emit Organization + WebSite JSON-LD on the homepage view when project.publicUrl is present.</div>
+        
+        <div class="sec-mit-loc"><span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div>
+      <div class="sec-status-group">
+        <div class="sec-status-head" style="color:var(--cyan)">Content depth · 1</div>
+        <div class="seo-finding-card" id="f-F-010">
+        <div class="seo-finding-top">
+          <span class="seo-sev sev-P3" style="background:var(--teal);color:#0A0E27">P3</span>
+          <span class="sec-tid">F-010</span>
+          <span class="sec-tname">Heading hierarchy: H4 nested under H2 without H3 in 2 places</span>
+          <span class="sec-status-pill" style="color:var(--red);border-color:var(--red)">OPEN</span>
+          <span class="seo-area-pill">Content depth</span>
+        </div>
+        <div class="sec-timpact">Visual-only on the rendered #/security view. Flag for tidy-up when hash-route SEO actually matters.</div>
+        <div class="seo-fix"><span class="seo-fix-label">Fix:</span> Promote intermediate headings in buildSecurity() to H3 to keep the ladder consistent.</div>
+        
+        <div class="sec-mit-loc"><a class="ilink" href="#/module/lib-generate">lib/generate.js</a> · <span class="seo-audit-ref">audit: seo-tech-2026-06-14</span></div>
+      </div>
+      </div></div>
+    
+    <div class="sec-head">Audit history</div>
+    <div class="seo-audits">
+      <div class="seo-audit-row">
+        <span class="seo-audit-date">2026-06-14</span>
+        <span class="seo-audit-target">atlas.bytebridges.dev</span>
+        <span class="seo-audit-scope">site-wide technical SEO</span>
+        <div class="seo-audit-summary">1 P1 (latent, catch-all 200) · 5 P2 (sitemap, robots, canonical, preview noindex, OG image) · 5 P3. All 11 findings target lib-generate or repo-level conventions, none site-specific corrections.</div>
+        <div class="seo-audit-source">▸ <code>audits/seo-tech-2026-06-14/seo-site.md</code></div>
+      </div>
+    </div></div>
+<footer>Living atlas for <b>BB Atlas</b> · edit <code>project.json</code> &rarr; <code>bb-atlas generate</code> &rarr; refresh<br>Generated 2026-06-14 21:41 · 9 modules · 11 SEO findings<br>Built with <b style="color:var(--cyan)">Byte Bridges Atlas</b> · reusable living-doc generator</footer>
 </div>
 <script>
 const SIM=null,RISKS=[{"name":"fs.watch on macOS doesn't see editor atomic-saves reliably","severity":"low","impact":"Some editors (vim with :w) replace the file atomically, which can confuse fs.watch — change events stop firing.","mitigation":"If serve stops responding to saves, kill + restart. v1.1 candidate: switch to fs.watchFile (polling) or expose a --poll flag."},{"name":"innerHTML in the bb finance copy","severity":"low","impact":"The standalone bb finance generator still uses innerHTML for the sim widget updates — security-hook flagged when copying upstream into this repo.","mitigation":"This repo uses textContent + pre-rendered <b> markers (same render, safer). bb finance dedup sprint will fix theirs."},{"name":"No JSON Schema document","severity":"low","impact":"Schema lives in lib/validate.js + the SKILL.md table. Not a machine-readable JSON Schema (no draft-07 .json). IDE auto-complete works via TS for require/import, not the JSON file.","mitigation":"v1.1 candidate: emit schema.json from validate.js (or vice versa)."}];
@@ -528,5 +1089,21 @@ function drawHist(data,p50,p80,p90){
 }
 router();
 window.addEventListener('resize',()=>{if(SIM&&document.querySelector('.view[data-route="/"]').classList.contains('active'))runSim();});
+// security view toggle
+document.querySelectorAll('.sec-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.sec-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    document.querySelectorAll('.sec-pane').forEach(p=>p.classList.toggle('active',p.classList.contains('sec-pane-'+tab)));
+  });
+});
+// seo view toggle
+document.querySelectorAll('.seo-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.seo-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    document.querySelectorAll('.seo-pane').forEach(p=>p.classList.toggle('active',p.classList.contains('seo-pane-'+tab)));
+  });
+});
 </script>
 </body></html>
