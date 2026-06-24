@@ -3,26 +3,38 @@
 > JSON-driven living-doc generator. One JSON file → one self-contained
 > interactive HTML "atlas". Hash-routed drill-down, Monte Carlo schedule
 > simulation, risk register, **security model** (threats + mitigations +
-> principles + compliance), devlog. Reusable across project plans,
-> constitutions, runbooks, and knowledge bases. No build step, no
-> dependencies.
+> principles + compliance), **SEO posture** (findings + audits + checks),
+> devlog. Reusable across project plans, constitutions, runbooks, and
+> knowledge bases. No build step, no dependencies.
 
-## What's new in v1.1.0
+## What's new in v1.2.0
 
-- **Security view** (`#/security`) with a Threat-rooted (default) and
-  Mitigation-rooted toggle. Threats are grouped by severity; mitigations
-  are grouped by status (planned → in-progress → verified → dropped).
-- **Per-module security posture** rendered on each module page (data
-  classes, at-rest class, threats exposed to, mitigations implemented).
-- **Per-task 🔒 chips** on sprint pages where a task implements a
-  named mitigation.
-- **Security tile** on the overview between architecture and risks
-  (threat / mitigation / principle / compliance counts).
-- **Risk tagging** — `kind: "security"` renders shield glyph + accent
-  border on risks; `devlog[].tags` including `"security"` does the same
-  for log entries.
+- **SEO view** (`#/seo`) with a By-severity (default) and By-area toggle.
+  Findings are grouped P1 → P2 → P3, or by area (sitemap / robots /
+  canonical / redirects / status / 404 / meta / schema / content).
+- **Site-wide checks matrix** + **status-code health grid** + **principles
+  strip** on the SEO view; **audit history** at the bottom with links to
+  the source `audits/seo-tech-YYYY-MM-DD/seo-site.md` reports.
+- **Per-module SEO posture** rendered on each module page (routes,
+  indexability, canonical, schema types, finding refs).
+- **Per-task 🔎 chips** on sprint pages where a task closes a
+  named finding.
+- **SEO tile** on the overview between security and risks
+  (P1 / P2 / P3 counts + status-code health summary).
+- **Devlog tagging** — `devlog[].tags` including `"seo"` renders a
+  magnifying-glass glyph + amber-tinted tag chip.
+- Designed to consume site-wide technical-SEO audits produced by the
+  `site-audit-on-page-seo` skill (section B) — copy-paste lift from
+  audit report → `seo.findings[]`.
 - All additions are backward-compatible: a `project.json` with no
-  `security` block renders identically to v1.0.0.
+  `seo` block renders identically to v1.1.0.
+
+## v1.1.0 — security-by-design
+
+- **Security view** (`#/security`) with Threat-rooted (default) and
+  Mitigation-rooted toggle. Per-module security posture, per-task 🔒
+  chips, security tile on the overview, risk + devlog shield tagging.
+  Full schema reference in `SKILL.md`.
 
 ## Install
 
@@ -75,8 +87,8 @@ bb-atlas my-plan/project.json my-plan/index.html
 
 See `SKILL.md` for the full schema. Only `project.name` is strictly
 required. Every other section (`metrics`, `roadmap`, `sprints`,
-`architecture`, `simulation`, `pricing`, `risks`, `security`, `devlog`,
-`milestones`) is optional — omit a key to drop that section.
+`architecture`, `simulation`, `pricing`, `risks`, `security`, `seo`,
+`devlog`, `milestones`) is optional — omit a key to drop that section.
 
 See `project.template.json` for a worked example (bb finance iOS plan,
 full schema populated).
