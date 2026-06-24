@@ -36,7 +36,16 @@ to a phase via `/roadmap_promote <id> --phase <name>` when committed.
 
 ### Active
 
-_(no brainstorms yet — add via `roadmap brainstorm "..." --source usage`)_
+
+
+
+
+
+- **B-005** *(self, 2026-06-24)* — bb-atlas multi-page output mode — opt-in --multi-page flag emits a separate HTML per view + a shared shell, so each #/route gains a real /route URL that hosting platforms can 404 correctly. Unlocks F-001 (catch-all 200) and ladder fixes in F-010. Big jump in scope; gated behind explicit flag so single-page default stays untouched. Captured from audits/seo-tech-2026-06-14/seo-site.md.
+- **B-004** *(self, 2026-06-24)* — bb-atlas JSON-LD Organization + WebSite — emit Organization + WebSite JSON-LD on the overview view when project.publicUrl is present. Pulls name + url from project; logo from project.seo.ogImage when defined. Closes F-008 from audits/seo-tech-2026-06-14/seo-site.md.
+- **B-003** *(self, 2026-06-24)* — bb-atlas robots.txt + preview noindex — emit a default robots.txt (User-agent: * / Allow: / / Sitemap: <publicUrl>/sitemap.xml) next to the generated HTML; emit <meta name=robots content=noindex> when VERCEL_ENV=preview or equivalent at generate time. Closes F-002 + F-005 from audits/seo-tech-2026-06-14/seo-site.md.
+- **B-002** *(self, 2026-06-24)* — bb-atlas sitemap subcommand — bb-atlas sitemap <input.json> writes a sitemap.xml next to the generated HTML when project.publicUrl is set. Closes F-003 from audits/seo-tech-2026-06-14/seo-site.md.
+- **B-001** *(self, 2026-06-24)* — bb-atlas head emitter — canonical, meta description, OG quartet, twitter:card, auto-derived title, plus schema project.publicUrl + project.seo.{title,description,ogImage} overrides. Closes F-004 + F-006 + F-007 + F-009 + F-011 from audits/seo-tech-2026-06-14/seo-site.md.
 
 ### Promoted
 
